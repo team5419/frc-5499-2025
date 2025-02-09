@@ -7,8 +7,13 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPLTVController;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -197,6 +202,40 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
    */
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutineToApply.dynamic(direction);
+  }
+
+  public Pose2d getPose() {
+    return this.getState().Pose;
+  }
+
+  public ChassisSpeeds getCurrentSpeeds() {
+    return this.getState().Speeds;
+  }
+
+  public void configAutos() {
+    RobotConfig config;
+    try {
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      config = new RobotConfig(null, null, null, getModuleLocations());
+    }
+
+    AutoBuilder.configure(
+        this::getPose,
+        this::resetPose,
+        this::getCurrentSpeeds,
+        (speeds, feedforwards) ->
+            this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds)),
+        new PPLTVController(0.02),
+        config,
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
   }
 
   @Override
