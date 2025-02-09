@@ -45,7 +45,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     // NamedCommands.registerCommand("Disloge Algae", () -> {});
-    autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = AutoBuilder.buildAutoChooser("Test Path");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
