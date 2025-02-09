@@ -221,21 +221,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     AutoBuilder.configure(
-        this::getPose,
-        this::resetPose,
-        this::getCurrentSpeeds,
-        (speeds, feedforwards) ->
-            this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds)),
-        new PPLTVController(0.02),
-        config,
-        () -> {
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
-        this);
+      this::getPose,
+      this::resetPose,
+      this::getCurrentSpeeds,
+      (speeds, feedforwards) ->
+        this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds)),
+      new PPLTVController(0.02),
+      config,
+      () -> {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this);
   }
 
   @Override
