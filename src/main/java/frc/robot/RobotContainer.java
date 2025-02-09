@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -94,6 +96,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    return new PathPlannerAuto("Test Path");
   }
 }
