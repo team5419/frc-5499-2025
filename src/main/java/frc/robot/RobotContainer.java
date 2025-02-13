@@ -9,12 +9,15 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
@@ -44,6 +47,10 @@ public class RobotContainer {
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
   private final SendableChooser<Command> autoChooser;
+
+  private final SparkMax intake = new SparkMax(RobotMap.INTAKE, MotorType.kBrushless);
+  private final SparkMax leftElevator = new SparkMax(RobotMap.LEFT_ELEVATOR, MotorType.kBrushless);
+  private final SparkMax rightElevator = new SparkMax(RobotMap.RIGHT_ELEVATOR, MotorType.kBrushless);
 
   public RobotContainer() {
     // NamedCommands.registerCommand("Disloge Algae", () -> {});
@@ -89,14 +96,48 @@ public class RobotContainer {
     joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
+    joystick.rightBumper().onTrue(getIntakeCommand(1));
+    joystick.leftBumper().onTrue(getIntakeCommand(-1));
+    joystick.rightBumper().onFalse(getIntakeCommand(0));
+    joystick.leftBumper().onFalse(getIntakeCommand(0));
+
+    joystick.rightTrigger().onTrue(getElevatorCommand(1));
+    joystick.rightTrigger().onFalse(getElevatorCommand(1));
+
+    joystick.leftTrigger().onTrue(getElevatorCommand(-1));
+    joystick.leftTrigger().onFalse(getElevatorCommand(-1));
+
     // reset the field-centric heading on left bumper press
-    joystick.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
   }
 
+  public Command getElevatorCommand(int direction) {
+    return Commands.runOnce(
+        () -> {
+          leftElevator.set(direction * 0.1);
+          rightElevator.set(-direction * 0.1);
+        });
+  }
+
+  public Command getIntakeCommand(int direction) {
+    System.out.println(direction);
+    return Commands.runOnce(() -> intake.set(direction));
+  }
+
   public Command getAutonomousCommand() {
     // return autoChooser.getSelected();
-    return new PathPlannerAuto("Test Path");
+    // return new PathPlannerPath("Test Path");
+    try {
+      // Load the path you want to follow using its name in the GUI
+      PathPlannerPath path = PathPlannerPath.fromPathFile("Test Path");
+
+      // Create a path following command using AutoBuilder. This will also trigger event markers.
+      return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+      DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+      return Commands.none();
+    }
   }
 }
