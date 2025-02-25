@@ -1,9 +1,56 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotMap;
 
 public class Elevator extends SubsystemBase {
-  private final SparkMax leftElevator = new SparkMax(2, SparkMax.MotorType.kBrushless);
+  private final SparkMax leftElevator = new SparkMax(RobotMap.LEFT_ELEVATOR, MotorType.kBrushless);
+  private final SparkMax rightElevator =
+      new SparkMax(RobotMap.RIGHT_ELEVATOR, MotorType.kBrushless);
+
+  private final SparkClosedLoopController leftController = leftElevator.getClosedLoopController();
+  private final SparkClosedLoopController rightController = rightElevator.getClosedLoopController();
+
+  private final RelativeEncoder leftEncoder = leftElevator.getEncoder();
+  private final RelativeEncoder rightEncoder = rightElevator.getEncoder();
+
+  public Elevator() {
+    rightElevator.configure(new SparkMaxConfig().inverted(true), null, null);
+    leftElevator.configure(new SparkMaxConfig().inverted(false), null, null);
+
+    // Set Smart Motion / Smart Velocity parameters
+    // int smartMotionSlot = 0;
+    // m_pidController.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
+    // m_pidController.setSmartMotionMinOutputVelocity(minVel, smartMotionSlot);
+    // m_pidController.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
+    // m_pidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
+
+    // leftController.setReference(0, ControlType.kMAXMotionPositionControl);
+    // rightController.setReference(0, ControlType.kPosition);
+  }
+
+  public Command getElevateCommand(int direction) {
+    return this.runOnce(
+        () -> {
+          System.out.println(direction);
+
+          // leftElevator.set(direction);
+          // rightElevator.set(direction);
+          // rightElevator.set(direction);
+          leftController.setReference(100 * direction, ControlType.kMAXMotionPositionControl);
+          rightController.setReference(100 * direction, ControlType.kMAXMotionPositionControl);
+        });
+  }
+
+  // public void elevate(int direction) {
+  //   leftController.setReference(1000 * direction, ControlType.kMAXMotionPositionControl);
+  //   rightController.setReference(1000 * direction, ControlType.kMAXMotionPositionControl);
+  // }
 }

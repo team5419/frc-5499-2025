@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -45,12 +46,11 @@ public class RobotContainer {
   private final CommandXboxController joystick = new CommandXboxController(0);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+  public final Elevator elevator = new Elevator();
 
   private final SendableChooser<Command> autoChooser;
 
   private final SparkMax intake = new SparkMax(RobotMap.INTAKE, MotorType.kBrushless);
-  private final SparkMax leftElevator = new SparkMax(RobotMap.LEFT_ELEVATOR, MotorType.kBrushless);
-  private final SparkMax rightElevator = new SparkMax(RobotMap.RIGHT_ELEVATOR, MotorType.kBrushless);
 
   public RobotContainer() {
     // NamedCommands.registerCommand("Disloge Algae", () -> {});
@@ -101,11 +101,8 @@ public class RobotContainer {
     joystick.rightBumper().onFalse(getIntakeCommand(0));
     joystick.leftBumper().onFalse(getIntakeCommand(0));
 
-    joystick.rightTrigger().onTrue(getElevatorCommand(1));
-    joystick.rightTrigger().onFalse(getElevatorCommand(1));
-
-    joystick.leftTrigger().onTrue(getElevatorCommand(-1));
-    joystick.leftTrigger().onFalse(getElevatorCommand(-1));
+    joystick.rightTrigger().onTrue(elevator.getElevateCommand(1));
+    joystick.rightTrigger().onFalse(elevator.getElevateCommand(0));
 
     // reset the field-centric heading on left bumper press
     joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -113,16 +110,7 @@ public class RobotContainer {
     // drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  public Command getElevatorCommand(int direction) {
-    return Commands.runOnce(
-        () -> {
-          leftElevator.set(direction * 0.1);
-          rightElevator.set(-direction * 0.1);
-        });
-  }
-
   public Command getIntakeCommand(int direction) {
-    System.out.println(direction);
     return Commands.runOnce(() -> intake.set(direction));
   }
 
