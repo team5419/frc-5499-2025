@@ -13,6 +13,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -47,10 +49,9 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final Elevator elevator = new Elevator();
+  public final Intake intake = new Intake();
 
   private final SendableChooser<Command> autoChooser;
-
-  private final SparkMax intake = new SparkMax(RobotMap.INTAKE, MotorType.kBrushless);
 
   public RobotContainer() {
     // NamedCommands.registerCommand("Disloge Algae", () -> {});
@@ -96,10 +97,11 @@ public class RobotContainer {
     joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-    joystick.rightBumper().onTrue(getIntakeCommand(1));
-    joystick.leftBumper().onTrue(getIntakeCommand(-1));
-    joystick.rightBumper().onFalse(getIntakeCommand(0));
-    joystick.leftBumper().onFalse(getIntakeCommand(0));
+    joystick.rightBumper().onTrue(intake.setIntakeWithSensorCommand(0.25));
+    //joystick.rightBumper().onTrue(getIntakeCommand(1));
+    joystick.leftBumper().onTrue(intake.setIntakeCommand(-0.25));
+    joystick.rightBumper().onFalse(intake.setIntakeCommand(0));
+    joystick.leftBumper().onFalse(intake.setIntakeCommand(0));
 
     joystick.rightTrigger().onTrue(elevator.getElevateCommand(1));
     joystick.rightTrigger().onFalse(elevator.getElevateCommand(0));
@@ -110,9 +112,7 @@ public class RobotContainer {
     // drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  public Command getIntakeCommand(int direction) {
-    return Commands.runOnce(() -> intake.set(direction));
-  }
+
 
   public Command getAutonomousCommand() {
     // return autoChooser.getSelected();
