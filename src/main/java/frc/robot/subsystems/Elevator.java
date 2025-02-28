@@ -59,8 +59,20 @@ public class Elevator extends SubsystemBase {
         () -> {
           System.out.println(direction);
 
-          leftElevator.set(direction);
-          rightElevator.set(direction);
+          leftElevator.set(-direction);
+          // rightElevator.set(-direction);
+          // leftController.setReference(direction * 100, ControlType.kPosition);
+          // rightController.setReference(direction * 100, ControlType.kPosition);
+        });
+  }
+
+  public Command getElevateCommand2(int direction) {
+    return this.runOnce(
+        () -> {
+          System.out.println(direction);
+
+          rightElevator.set(-direction);
+          // rightElevator.set(-direction);
           // leftController.setReference(direction * 100, ControlType.kPosition);
           // rightController.setReference(direction * 100, ControlType.kPosition);
         });

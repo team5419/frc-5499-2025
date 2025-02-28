@@ -101,8 +101,11 @@ public class RobotContainer {
     joystick.rightBumper().onFalse(getIntakeCommand(0));
     joystick.leftBumper().onFalse(getIntakeCommand(0));
 
-    joystick.rightTrigger().onTrue(elevator.getElevateCommand(1));
+    joystick.rightTrigger().onTrue(elevator.getElevateCommand(-1));
     joystick.rightTrigger().onFalse(elevator.getElevateCommand(0));
+
+    joystick.leftTrigger().onTrue(elevator.getElevateCommand2(1));
+    joystick.leftTrigger().onFalse(elevator.getElevateCommand2(0));
 
     // reset the field-centric heading on left bumper press
     joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
