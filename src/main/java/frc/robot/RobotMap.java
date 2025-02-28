@@ -17,10 +17,11 @@ public class RobotMap {
   public static final int BACK_RIGHT_STEER = 41;
   public static final int BACK_RIGHT_DRIVE = 42;
 
-  public static final int INTAKE = 41;
-
-  public static final int LEFT_ELEVATOR = 2;
-  public static final int RIGHT_ELEVATOR = 43;
-
   public static final int PIGEON = 50;
+
+  // SparkMAX
+  public static final int LEFT_ELEVATOR = 10;
+  public static final int RIGHT_ELEVATOR = 12;
+  public static final int INTAKE = 20;
+  public static final int DISLOGER = 30;
 }
