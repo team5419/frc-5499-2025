@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -30,8 +31,8 @@ public class Elevator extends SubsystemBase {
         .p(0.1)
         .outputRange(-1, 1)
         .maxMotion
-        .maxVelocity(2000)
-        .maxAcceleration(10_000)
+        .maxVelocity(10)
+        .maxAcceleration(10)
         .allowedClosedLoopError(0.25);
 
     rightElevator.configure(
@@ -59,22 +60,10 @@ public class Elevator extends SubsystemBase {
         () -> {
           System.out.println(direction);
 
-          leftElevator.set(-direction);
-          // rightElevator.set(-direction);
-          // leftController.setReference(direction * 100, ControlType.kPosition);
-          // rightController.setReference(direction * 100, ControlType.kPosition);
-        });
-  }
-
-  public Command getElevateCommand2(int direction) {
-    return this.runOnce(
-        () -> {
-          System.out.println(direction);
-
-          rightElevator.set(-direction);
-          // rightElevator.set(-direction);
-          // leftController.setReference(direction * 100, ControlType.kPosition);
-          // rightController.setReference(direction * 100, ControlType.kPosition);
+          // leftElevator.set(direction * 0.1);
+          // rightElevator.set(direction * 0.1);
+          leftController.setReference(direction * 5, ControlType.kMAXMotionPositionControl);
+          rightController.setReference(direction * 5, ControlType.kMAXMotionPositionControl);
         });
   }
 }
