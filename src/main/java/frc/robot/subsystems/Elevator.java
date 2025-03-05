@@ -62,8 +62,8 @@ public class Elevator extends SubsystemBase {
 
           // leftElevator.set(direction * 0.1);
           // rightElevator.set(direction * 0.1);
-          leftController.setReference(direction * 5, ControlType.kMAXMotionPositionControl);
-          rightController.setReference(direction * 5, ControlType.kMAXMotionPositionControl);
+          leftController.setReference(direction * 10, ControlType.kMAXMotionPositionControl);
+          rightController.setReference(direction * 10, ControlType.kMAXMotionPositionControl);
         });
   }
 }
