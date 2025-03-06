@@ -26,14 +26,7 @@ public class Elevator extends SubsystemBase {
   private final RelativeEncoder rightEncoder = rightElevator.getEncoder();
 
   public Elevator() {
-    elevatorConfig
-        .closedLoop
-        .p(0.1)
-        .outputRange(-1, 1)
-        .maxMotion
-        .maxVelocity(10)
-        .maxAcceleration(10)
-        .allowedClosedLoopError(0.25);
+    elevatorConfig.closedLoop.p(0.05).outputRange(-1, 1);
 
     rightElevator.configure(
         elevatorConfig.inverted(true),
@@ -55,15 +48,18 @@ public class Elevator extends SubsystemBase {
     // rightController.setReference(0, ControlType.kPosition);
   }
 
-  public Command getElevateCommand(int direction) {
+  @Override
+  public void periodic() {
+    System.out.println(leftEncoder.getPosition());
+  }
+
+  public Command getElevateCommand(double direction) {
     return this.runOnce(
         () -> {
-          System.out.println(direction);
-
           // leftElevator.set(direction * 0.1);
           // rightElevator.set(direction * 0.1);
-          leftController.setReference(direction * 10, ControlType.kMAXMotionPositionControl);
-          rightController.setReference(direction * 10, ControlType.kMAXMotionPositionControl);
+          leftController.setReference(direction * 14, ControlType.kPosition);
+          rightController.setReference(direction * 14, ControlType.kPosition);
         });
   }
 }

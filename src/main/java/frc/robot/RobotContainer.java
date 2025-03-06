@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -55,7 +56,9 @@ public class RobotContainer {
   private final SparkMax intake = new SparkMax(RobotMap.INTAKE, MotorType.kBrushless);
 
   public RobotContainer() {
-    // NamedCommands.registerCommand("Disloge Algae", () -> {});
+    NamedCommands.registerCommand("Elevator", elevator.getElevateCommand(1));
+    NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
+
     autoChooser = AutoBuilder.buildAutoChooser("Test Path");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -66,21 +69,14 @@ public class RobotContainer {
   private void configureBindings() {
     // TODO: Add deadband
     // TODO: Add slowmode
-    // Note that X is defined as forward according to WPILib convention,
-    // and Y is defined as to the left according to WPILib convention.
+    // Drivetrain will execute this command periodically
     drivetrain.setDefaultCommand(
-        // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
             () ->
                 drive
-                    .withVelocityX(
-                        -joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(
-                        -joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        -joystick.getRightX()
-                            * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            ));
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick
@@ -106,7 +102,7 @@ public class RobotContainer {
     joystick.rightTrigger().onTrue(elevator.getElevateCommand(1));
     joystick.rightTrigger().onFalse(elevator.getElevateCommand(0));
 
-    joystick.leftTrigger().onTrue(elevator.getElevateCommand(2));
+    joystick.leftTrigger().onTrue(elevator.getElevateCommand(0.5));
     joystick.leftTrigger().onFalse(elevator.getElevateCommand(0));
 
     // joystick.leftTrigger().onTrue(disloger.getDislogeCommand(1));
