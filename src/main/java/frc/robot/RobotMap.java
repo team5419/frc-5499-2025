@@ -24,4 +24,7 @@ public class RobotMap {
   public static final int RIGHT_ELEVATOR = 11;
   public static final int INTAKE = 20;
   public static final int DISLOGER = 30;
+
+  // RoboRIO ports
+  public static final int LED_STRIP = 8;
 }

@@ -25,6 +25,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Disloger;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Lights;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -47,9 +48,10 @@ public class RobotContainer {
 
   private final CommandXboxController joystick = new CommandXboxController(0);
 
-  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-  public final Elevator elevator = new Elevator();
-  public final Disloger disloger = new Disloger();
+  private final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+  private final Elevator elevator = new Elevator();
+  private final Disloger disloger = new Disloger();
+  private final Lights lights = new Lights();
 
   private final SendableChooser<Command> autoChooser;
 
