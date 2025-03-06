@@ -26,7 +26,7 @@ public class Elevator extends SubsystemBase {
   private final RelativeEncoder rightEncoder = rightElevator.getEncoder();
 
   public Elevator() {
-    elevatorConfig.closedLoop.p(0.05).outputRange(-1, 1);
+    elevatorConfig.closedLoop.p(0.1).outputRange(-1, 1);
 
     rightElevator.configure(
         elevatorConfig.inverted(true),
@@ -50,7 +50,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(leftEncoder.getPosition());
+    // System.out.println(leftEncoder.getPosition());
   }
 
   public Command getElevateCommand(double direction) {
