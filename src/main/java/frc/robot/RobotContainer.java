@@ -11,10 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,8 +23,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Disloger;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lights;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -45,8 +42,6 @@ public class RobotContainer {
               DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
-  // private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -70,6 +65,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // ---------- Driving ----------
     // TODO: Add deadband
     // TODO: Add slowmode
     // Drivetrain will execute this command periodically
@@ -97,28 +93,27 @@ public class RobotContainer {
     joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
+    // ---------- Intake ----------
     joystick.rightBumper().onTrue(intake.setIntakeWithSensorCommand(0.25));
-    //joystick.rightBumper().onTrue(getIntakeCommand(1));
+    // joystick.rightBumper().onTrue(getIntakeCommand(1));
     joystick.leftBumper().onTrue(intake.setIntakeCommand(-0.25));
     joystick.rightBumper().onFalse(intake.setIntakeCommand(0));
     joystick.leftBumper().onFalse(intake.setIntakeCommand(0));
 
+    // ---------- Elevator ----------
     joystick.rightTrigger().onTrue(elevator.getElevateCommand(1));
     joystick.rightTrigger().onFalse(elevator.getElevateCommand(0));
-
     joystick.leftTrigger().onTrue(elevator.getElevateCommand(0.5));
     joystick.leftTrigger().onFalse(elevator.getElevateCommand(0));
+
+    // ---------- Disloger ----------
 
     // joystick.leftTrigger().onTrue(disloger.getDislogeCommand(1));
     // joystick.leftTrigger().onFalse(disloger.getDislogeCommand(0));
 
-    // reset the field-centric heading on left bumper press
+    // ---------- Reset heading ----------
     joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-    // drivetrain.registerTelemetry(logger::telemeterize);
   }
-
-
 
   public Command getAutonomousCommand() {
     // return autoChooser.getSelected();
@@ -130,7 +125,7 @@ public class RobotContainer {
       // Create a path following command using AutoBuilder. This will also trigger event markers.
       return AutoBuilder.followPath(path);
     } catch (Exception e) {
-      DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+      DriverStation.reportError("error building auto: " + e.getMessage(), e.getStackTrace());
       return Commands.none();
     }
   }
