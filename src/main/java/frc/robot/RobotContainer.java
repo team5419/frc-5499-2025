@@ -42,19 +42,30 @@ public class RobotContainer {
 
   private final CommandXboxController joystick = new CommandXboxController(0);
 
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-  private final Elevator elevator = new Elevator();
-  private final Disloger disloger = new Disloger();
-  private final Lights lights = new Lights();
-  private final Intake intake = new Intake();
+  private final CommandSwerveDrivetrain drivetrain;
+  private final Elevator elevator;
+  private final Disloger disloger;
+  private final Lights lights;
+  private final Intake intake;
 
   private boolean isSlowmode = false;
 
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
-    NamedCommands.registerCommand("Set Elevator", elevator.setElevateCommand(1));
+    drivetrain = TunerConstants.createDrivetrain();
+    elevator = new Elevator();
+    disloger = new Disloger();
+    lights = new Lights();
+    intake = new Intake();
+
+    NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
+    NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
+    NamedCommands.registerCommand("Elevator L3", elevator.setElevateCommand(2));
     NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
+    NamedCommands.registerCommand("Disloger Reverse", disloger.getDislogeCommand(-1));
+    NamedCommands.registerCommand("Intake", intake.setIntakeCommand(1));
+    NamedCommands.registerCommand("Intake Reverse", intake.setIntakeCommand(-1));
 
     autoChooser = AutoBuilder.buildAutoChooser("Test Auto");
     SmartDashboard.putData("Auto Chooser", autoChooser);
