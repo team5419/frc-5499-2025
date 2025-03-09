@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.RobotMap;
 
 public class Elevator extends SubsystemBase {
@@ -26,10 +27,10 @@ public class Elevator extends SubsystemBase {
   private final RelativeEncoder leftEncoder = leftElevator.getEncoder();
   private final RelativeEncoder rightEncoder = rightElevator.getEncoder();
 
-  private int position = 0;
+  private int currentPosition = 0;
 
   public Elevator() {
-    elevatorConfig.closedLoop.p(0.1).velocityFF(position).outputRange(-1, 1);
+    elevatorConfig.closedLoop.p(0.1).outputRange(-1, 1);
 
     rightElevator.configure(
         elevatorConfig.inverted(true),
@@ -56,47 +57,27 @@ public class Elevator extends SubsystemBase {
     // System.out.println(leftEncoder.getPosition());
   }
 
-  public Command setElevateCommand(int position) {
+  public Command setElevateCommand(int newPosition) {
     return this.runOnce(
         () -> {
-          this.position = position;
-          double pos = 0;
-          switch (this.position) {
-            case 1:
-              pos = 3.5;
-              break;
-            case 2:
-              pos = 14;
-              break;
-            default:
-              pos = 0;
-          }
-          leftController.setReference(pos, ControlType.kPosition);
-          rightController.setReference(pos, ControlType.kPosition);
+          this.currentPosition = newPosition;
+          double position = Constants.elevatorPositions[this.currentPosition];
+
+          leftController.setReference(position, ControlType.kPosition);
+          rightController.setReference(position, ControlType.kPosition);
         });
   }
 
-  public Command changeElevateCommand(int position) {
+  public Command changeElevateCommand(int positionChange) {
     return this.runOnce(
         () -> {
-          this.position = this.position + position;
-          if (this.position > 2) this.position = 2;
-          double pos = 0;
-          switch (this.position) {
-            case 1:
-              pos = 3.5;
-              break;
-            case 2:
-              pos = 14;
-              break;
-            default:
-              pos = 0;
-          }
+          this.currentPosition = Math.min(this.currentPosition + positionChange, 2);
+          double position = Constants.elevatorPositions[this.currentPosition];
 
-          leftController.setReference(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, 1.0);
-          rightController.setReference(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, 1.0);
-          // leftController.setReference(pos, ControlType.kPosition);
-          // rightController.setReference(pos, ControlType.kPosition);
+          leftController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0, 1.0);
+          rightController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0, 1.0);
+          // leftController.setReference(position, ControlType.kPosition);
+          // rightController.setReference(position, ControlType.kPosition);
         });
   }
 }

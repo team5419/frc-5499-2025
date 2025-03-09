@@ -34,4 +34,22 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public static final double[] elevatorPositions = {0, 3.5, 14};
+
+  // public static enum ElevatorPosition {
+  //   L1(0),
+  //   L2(3.5),
+  //   L3(14);
+
+  //   private final double position;
+
+  //   ElevatorPosition(double position) {
+  //     this.position = position;
+  //   }
+
+  //   public double get() {
+  //     return position;
+  //   }
+  // }
 }

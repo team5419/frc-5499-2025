@@ -65,7 +65,6 @@ public class RobotContainer {
   private void configureBindings() {
     // ---------- Driving ----------
     // TODO: Add deadband
-    // TODO: Add slowmode
     // Drivetrain will execute this command periodically
     drivetrain.setDefaultCommand(
         drivetrain.applyRequest(
