@@ -96,7 +96,7 @@ public class RobotContainer {
     // joystick.leftBumper().onTrue(intake.setIntakeCommand(-0.25));
     // joystick.rightBumper().onFalse(intake.setIntakeCommand(0));
     // joystick.leftBumper().onFalse(intake.setIntakeCommand(0));
-    joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.75));
+    joystick.rightTrigger().onTrue(intake.setIntakeCommand(1.0));
     joystick.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
     joystick.rightTrigger().onFalse(intake.setIntakeCommand(0));
     joystick.leftTrigger().onFalse(intake.setIntakeCommand(0));

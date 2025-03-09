@@ -63,7 +63,7 @@ public class Elevator extends SubsystemBase {
           double pos = 0;
           switch (this.position) {
             case 1:
-              pos = 4;
+              pos = 3.5;
               break;
             case 2:
               pos = 14;
@@ -84,7 +84,7 @@ public class Elevator extends SubsystemBase {
           double pos = 0;
           switch (this.position) {
             case 1:
-              pos = 4;
+              pos = 3.5;
               break;
             case 2:
               pos = 14;
