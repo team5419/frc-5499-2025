@@ -223,8 +223,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       config = new RobotConfig(null, null, null, getModuleLocations());
     }
 
-    PIDConstants translateConstants = new PIDConstants(15, 0.0, 0.2);
-    PIDConstants rotationConstants = new PIDConstants(15, 0.0, 0.2);
+    PIDConstants translateConstants = new PIDConstants(10, 0.0, 0.0);
+    PIDConstants rotationConstants = new PIDConstants(10, 0.0, 0.0);
 
     AutoBuilder.configure(
         this::getPose,

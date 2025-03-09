@@ -75,7 +75,7 @@ public class RobotContainer {
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed)
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick
         .b()
         .whileTrue(
@@ -96,7 +96,7 @@ public class RobotContainer {
     // joystick.leftBumper().onTrue(intake.setIntakeCommand(-0.25));
     // joystick.rightBumper().onFalse(intake.setIntakeCommand(0));
     // joystick.leftBumper().onFalse(intake.setIntakeCommand(0));
-    joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.5));
+    joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.75));
     joystick.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
     joystick.rightTrigger().onFalse(intake.setIntakeCommand(0));
     joystick.leftTrigger().onFalse(intake.setIntakeCommand(0));
@@ -134,7 +134,7 @@ public class RobotContainer {
                     MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) / 2;
                   } else {
                     MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-                    MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+                    MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
                   }
                 }));
   }

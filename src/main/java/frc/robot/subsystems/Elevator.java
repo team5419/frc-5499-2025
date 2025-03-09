@@ -93,8 +93,8 @@ public class Elevator extends SubsystemBase {
               pos = 0;
           }
 
-          leftController.setReference(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.5);
-          rightController.setReference(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.5);
+          leftController.setReference(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, 1.0);
+          rightController.setReference(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, 1.0);
           // leftController.setReference(pos, ControlType.kPosition);
           // rightController.setReference(pos, ControlType.kPosition);
         });
