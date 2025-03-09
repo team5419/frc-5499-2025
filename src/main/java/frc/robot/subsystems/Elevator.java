@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -25,8 +26,10 @@ public class Elevator extends SubsystemBase {
   private final RelativeEncoder leftEncoder = leftElevator.getEncoder();
   private final RelativeEncoder rightEncoder = rightElevator.getEncoder();
 
+  private int position = 0;
+
   public Elevator() {
-    elevatorConfig.closedLoop.p(0.1).outputRange(-1, 1);
+    elevatorConfig.closedLoop.p(0.1).velocityFF(position).outputRange(-1, 1);
 
     rightElevator.configure(
         elevatorConfig.inverted(true),
@@ -53,13 +56,47 @@ public class Elevator extends SubsystemBase {
     // System.out.println(leftEncoder.getPosition());
   }
 
-  public Command getElevateCommand(double direction) {
+  public Command setElevateCommand(int position) {
     return this.runOnce(
         () -> {
-          // leftElevator.set(direction * 0.1);
-          // rightElevator.set(direction * 0.1);
-          leftController.setReference(direction * 14, ControlType.kPosition);
-          rightController.setReference(direction * 14, ControlType.kPosition);
+          this.position = position;
+          double pos = 0;
+          switch (this.position) {
+            case 1:
+              pos = 4;
+              break;
+            case 2:
+              pos = 14;
+              break;
+            default:
+              pos = 0;
+          }
+          leftController.setReference(pos, ControlType.kPosition);
+          rightController.setReference(pos, ControlType.kPosition);
+        });
+  }
+
+  public Command changeElevateCommand(int position) {
+    return this.runOnce(
+        () -> {
+          this.position = this.position + position;
+          if (this.position > 2) this.position = 2;
+          double pos = 0;
+          switch (this.position) {
+            case 1:
+              pos = 4;
+              break;
+            case 2:
+              pos = 14;
+              break;
+            default:
+              pos = 0;
+          }
+
+          leftController.setReference(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.5);
+          rightController.setReference(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.5);
+          // leftController.setReference(pos, ControlType.kPosition);
+          // rightController.setReference(pos, ControlType.kPosition);
         });
   }
 }

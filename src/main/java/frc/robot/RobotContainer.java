@@ -10,13 +10,10 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
@@ -51,14 +48,15 @@ public class RobotContainer {
   private final Lights lights = new Lights();
   private final Intake intake = new Intake();
 
+  private boolean isSlowmode = false;
+
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
-    NamedCommands.registerCommand("Elevator", elevator.getElevateCommand(1));
+    NamedCommands.registerCommand("Set Elevator", elevator.setElevateCommand(1));
     NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
 
-    autoChooser = AutoBuilder.buildAutoChooser("Test Path");
-
+    autoChooser = AutoBuilder.buildAutoChooser("Test Auto");
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureBindings();
@@ -94,17 +92,27 @@ public class RobotContainer {
     joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // ---------- Intake ----------
-    joystick.rightBumper().onTrue(intake.setIntakeWithSensorCommand(0.25));
-    // joystick.rightBumper().onTrue(getIntakeCommand(1));
-    joystick.leftBumper().onTrue(intake.setIntakeCommand(-0.25));
-    joystick.rightBumper().onFalse(intake.setIntakeCommand(0));
-    joystick.leftBumper().onFalse(intake.setIntakeCommand(0));
+    // joystick.rightBumper().onTrue(intake.setIntakeWithSensorCommand(0.25));
+    // joystick.leftBumper().onTrue(intake.setIntakeCommand(-0.25));
+    // joystick.rightBumper().onFalse(intake.setIntakeCommand(0));
+    // joystick.leftBumper().onFalse(intake.setIntakeCommand(0));
+    joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.5));
+    joystick.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
+    joystick.rightTrigger().onFalse(intake.setIntakeCommand(0));
+    joystick.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
     // ---------- Elevator ----------
-    joystick.rightTrigger().onTrue(elevator.getElevateCommand(1));
-    joystick.rightTrigger().onFalse(elevator.getElevateCommand(0));
-    joystick.leftTrigger().onTrue(elevator.getElevateCommand(0.5));
-    joystick.leftTrigger().onFalse(elevator.getElevateCommand(0));
+    // joystick.rightTrigger().onTrue(elevator.getElevateCommand(1));
+    // joystick.rightTrigger().onFalse(elevator.getElevateCommand(0));
+    // joystick.leftTrigger().onTrue(elevator.getElevateCommand(0.5));
+    // joystick.leftTrigger().onFalse(elevator.getElevateCommand(0));
+    joystick.y().onTrue(elevator.changeElevateCommand(1));
+    joystick.a().onTrue(elevator.setElevateCommand(0));
+
+    joystick.leftBumper().onTrue(disloger.getDislogeCommand(1));
+    joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
+    joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
+    joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
 
     // ---------- Disloger ----------
 
@@ -112,21 +120,37 @@ public class RobotContainer {
     // joystick.leftTrigger().onFalse(disloger.getDislogeCommand(0));
 
     // ---------- Reset heading ----------
-    joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+    // ---------- Slowmode ----------
+    joystick
+        .leftStick()
+        .onTrue(
+            drivetrain.runOnce(
+                () -> {
+                  isSlowmode = !isSlowmode;
+                  if (isSlowmode) {
+                    MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 4;
+                    MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) / 2;
+                  } else {
+                    MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+                    MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+                  }
+                }));
   }
 
   public Command getAutonomousCommand() {
-    // return autoChooser.getSelected();
-    // return new PathPlannerPath("Test Path");
-    try {
-      // Load the path you want to follow using its name in the GUI
-      PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+    return autoChooser.getSelected();
+    // // return new PathPlannerPath("Test Path");
+    // try {
+    //   // Load the path you want to follow using its name in the GUI
+    //   PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
 
-      // Create a path following command using AutoBuilder. This will also trigger event markers.
-      return AutoBuilder.followPath(path);
-    } catch (Exception e) {
-      DriverStation.reportError("error building auto: " + e.getMessage(), e.getStackTrace());
-      return Commands.none();
-    }
+    //   // Create a path following command using AutoBuilder. This will also trigger event markers.
+    //   return AutoBuilder.followPath(path);
+    // } catch (Exception e) {
+    //   DriverStation.reportError("error building auto: " + e.getMessage(), e.getStackTrace());
+    //   return Commands.none();
+    // }
   }
 }

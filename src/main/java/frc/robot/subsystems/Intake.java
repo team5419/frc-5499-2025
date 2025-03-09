@@ -21,11 +21,12 @@ public class Intake extends SubsystemBase {
   public Command setIntakeWithSensorCommand(double direction) {
     return Commands.runOnce(
         () -> {
-          if (input.get()) {
-            intake.set(0);
-          } else {
-            intake.set(direction);
-          }
+          intake.set(direction);
+          // if (input.get()) {
+          //   intake.set(0);
+          // } else {
+          //   intake.set(direction);
+          // }
         });
   }
 
