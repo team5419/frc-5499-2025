@@ -11,13 +11,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class Lights extends SubsystemBase {
-  private final AddressableLED leds;
-  private AddressableLEDBuffer buffer;
+  private final AddressableLED leds_left;
+  // private final AddressableLED leds_right;
+  private AddressableLEDBuffer left_buffer;
+  // private AddressableLEDBuffer right_buffer;
 
   // // all hues at maximum saturation and half brightness
   private final LEDPattern m_rainbow = LEDPattern.rainbow(255, 255);
 
-  // // Our LED strip has a density of 120 LEDs per meter
+  // // Our LED strip has a density of 30 LEDs per meter
   private static final Distance kLedSpacing = Meters.of(1 / 30.0);
 
   // // Create a new pattern that scrolls the rainbow pattern across the LED strip, moving at a
@@ -27,29 +29,28 @@ public class Lights extends SubsystemBase {
       m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
 
   public Lights() {
-    leds = new AddressableLED(RobotMap.LED_STRIP);
-    buffer = new AddressableLEDBuffer(30);
+    leds_left = new AddressableLED(RobotMap.LED_LEFT);
+    // leds_right = new AddressableLED(RobotMap.LED_RIGHT);
 
-    leds.setLength(buffer.getLength());
-    leds.setData(buffer);
-    leds.start();
+    left_buffer = new AddressableLEDBuffer(30);
+    // right_buffer = new AddressableLEDBuffer(30);
+
+    leds_left.setLength(left_buffer.getLength());
+    // leds_right.setLength(right_buffer.getLength());
+
+    leds_left.setData(left_buffer);
+    // leds_right.setData(right_buffer);
+
+    leds_left.start();
+    // leds_right.start();
   }
 
   @Override
   public void periodic() {
-    // Update the buffer with the rainbow animation
-    m_scrollingRainbow.applyTo(buffer);
-    // for (int i = 0; i < buffer.getLength(); i++) {
-    //   buffer.setHSV(i, 90, 255, 255);
-    // }
-    // Set the LEDs
-    // set all leds to purple
-    // for (int i = 0; i < buffer.getLength(); i++) {
-    //   buffer.setHSV(i, 270, 255, 255);
-    //   System.out.println("setting led " + i + " to purple");
-    // }
-    // LEDPattern blue = LEDPattern.solid(Color.kCornflowerBlue);
-    // blue.applyTo(buffer);
-    leds.setData(buffer);
+    m_scrollingRainbow.applyTo(left_buffer);
+    // m_scrollingRainbow.applyTo(right_buffer);
+
+    leds_left.setData(left_buffer);
+    // leds_right.setData(right_buffer);
   }
 }

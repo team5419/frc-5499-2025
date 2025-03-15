@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -74,8 +73,10 @@ public class Elevator extends SubsystemBase {
           this.currentPosition = Math.min(this.currentPosition + positionChange, 2);
           double position = Constants.elevatorPositions[this.currentPosition];
 
-          leftController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0, 1.0);
-          rightController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0, 1.0);
+          leftController.setReference(
+              position, ControlType.kPosition /*, ClosedLoopSlot.kSlot0, 1.0 */);
+          rightController.setReference(
+              position, ControlType.kPosition /*, ClosedLoopSlot.kSlot0, 1.0 */);
           // leftController.setReference(position, ControlType.kPosition);
           // rightController.setReference(position, ControlType.kPosition);
         });
