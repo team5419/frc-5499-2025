@@ -63,11 +63,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
     NamedCommands.registerCommand("Elevator L3", elevator.setElevateCommand(2));
     NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
+    NamedCommands.registerCommand("Disloger Stop", disloger.getDislogeCommand(0));
     NamedCommands.registerCommand("Disloger Reverse", disloger.getDislogeCommand(-1));
     NamedCommands.registerCommand("Intake", intake.setIntakeCommand(1));
     NamedCommands.registerCommand("Intake Reverse", intake.setIntakeCommand(-1));
+    NamedCommands.registerCommand("Intake Stop", intake.setIntakeCommand(0));
 
-    autoChooser = AutoBuilder.buildAutoChooser("Test Auto");
+    autoChooser = AutoBuilder.buildAutoChooser("Move Forward Short");
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureBindings();

@@ -5,21 +5,39 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Side"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Elevator L2"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "1 Coral"
+            "waitTime": 0.8
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Intake Reverse"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Stop"
           }
         }
       ]
