@@ -266,8 +266,7 @@ public class SwerveDriveSubsystem extends TunerSwerveDrivetrain implements Subsy
               });
     }
 
-    Logger.recordOutput(
-        "Swerve Drive Subsystem/Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
+    Logger.recordOutput("Swerve Drive Subsystem/Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
     Logger.recordOutput("Swerve Drive Subsystem/Pose", getPose());
     Logger.recordOutput("Swerve Drive Subsystem/Chassis Speed", getCurrentSpeeds());
   }

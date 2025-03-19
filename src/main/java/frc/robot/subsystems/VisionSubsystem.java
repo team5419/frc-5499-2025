@@ -14,6 +14,8 @@ import frc.robot.LimelightHelpers;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 public class VisionSubsystem extends SubsystemBase {
   private final Pigeon2 gyro;
   private final SwerveDrivePoseEstimator poseEstimator;
@@ -80,6 +82,10 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     poseEstimator.update(
-      new Rotation2d(gyro.getYaw().getValueAsDouble()), modulePositionsSupplier.get());
+      new Rotation2d(gyro.getYaw().getValueAsDouble()),
+      modulePositionsSupplier.get()
+    );
+
+    Logger.recordOutput("Vision Subsystem/Pose Estimate", poseEstimator.getEstimatedPosition());
   }
 }
