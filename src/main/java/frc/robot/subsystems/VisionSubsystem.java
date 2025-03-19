@@ -56,8 +56,8 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // First, tell Limelight your robot's current orientation
-    // double robotYaw = gyro.getYaw().getValueAsDouble();
-    double robotYaw = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
+    double robotYaw = pidgey.getYaw().getValueAsDouble();
+    // double robotYaw = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
     LimelightHelpers.SetRobotOrientation("limelight", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
 
     // Get the pose estimate
