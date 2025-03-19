@@ -33,7 +33,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
 
-  public VisionSubsystem(CommandSwerveDrivetrainSubsystem drivetrain) {
+  public VisionSubsystem(SwerveDriveSubsystem drivetrain) {
     this.gyro = drivetrain.getPigeon2();
 
     // Set up the pose estimator
