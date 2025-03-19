@@ -25,19 +25,17 @@ import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
-  private double MaxSpeed =
-      TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-  private double MaxAngularRate =
-      RotationsPerSecond.of(0.75)
-          .in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+  // kSpeedAt12Volts desired top speed
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+  // 3/4 of a rotation per second max angular velocity
+  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
-  /* Setting up bindings for necessary control of the swerve drive platform */
+  // Setting up bindings for necessary control of the swerve drive platform
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-          .withDriveRequestType(
-              DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+          .withRotationalDeadband(MaxAngularRate * 0.1)
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -80,23 +78,21 @@ public class RobotContainer {
 
   private void configureBindings() {
     // ---------- Driving ----------
-    // TODO: Add controller deadbanding
-    // Drivetrain will execute this command periodically
-    drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(
-            () ->
-                drive
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
+    drivetrain.setDefaultCommand(drivetrain.applyRequest(() ->
+      drive
+        .withVelocityX(-joystick.getLeftY() * MaxSpeed)
+        .withVelocityY(-joystick.getLeftX() * MaxSpeed)
+        .withRotationalRate(-joystick.getRightX() * MaxAngularRate)
+      )
+    );
 
-    joystick
-        .x()
-        .whileTrue(
-            drivetrain.applyRequest(
-                () ->
-                    point.withModuleDirection(
-                        new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+    // ---------- honestly i have no idea what pressing x does while driving ----------
+    joystick.x().whileTrue(drivetrain.applyRequest(() ->
+        point.withModuleDirection(
+          new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX())
+        )
+      )
+    );
 
     joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
@@ -114,7 +110,6 @@ public class RobotContainer {
     joystick.a().onTrue(elevator.setElevateCommand(0));
 
     // ---------- Disloger ----------
-
     joystick.leftBumper().onTrue(disloger.getDislogeCommand(1));
     joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
     joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
@@ -124,20 +119,18 @@ public class RobotContainer {
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // ---------- Slowmode ----------
-    joystick
-        .leftStick()
-        .onTrue(
-            drivetrain.runOnce(
-                () -> {
-                  isSlowmode = !isSlowmode;
-                  if (isSlowmode) {
-                    MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 4;
-                    MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) / 2;
-                  } else {
-                    MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-                    MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
-                  }
-                }));
+    joystick.leftStick().onTrue(
+      drivetrain.runOnce(() -> {
+        isSlowmode = !isSlowmode;
+        if (isSlowmode) {
+          MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 4;
+          MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) / 2;
+        } else {
+          MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+          MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
+        }
+      })
+    );
   }
 
   public Command getAutonomousCommand() {

@@ -16,8 +16,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
   private final SparkMax leftElevator = new SparkMax(RobotMap.LEFT_ELEVATOR, MotorType.kBrushless);
-  private final SparkMax rightElevator =
-      new SparkMax(RobotMap.RIGHT_ELEVATOR, MotorType.kBrushless);
+  private final SparkMax rightElevator = new SparkMax(RobotMap.RIGHT_ELEVATOR, MotorType.kBrushless);
 
   private final SparkMaxConfig elevatorConfig = new SparkMaxConfig();
 
@@ -33,13 +32,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorConfig.closedLoop.p(0.1).outputRange(-1, 1);
 
     rightElevator.configure(
-        elevatorConfig.inverted(true),
-        ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+      elevatorConfig.inverted(true),
+      ResetMode.kResetSafeParameters,
+      PersistMode.kPersistParameters
+    );
     leftElevator.configure(
-        elevatorConfig.inverted(false),
-        ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+      elevatorConfig.inverted(false),
+      ResetMode.kResetSafeParameters,
+      PersistMode.kPersistParameters
+    );
   }
 
   @Override
@@ -51,24 +52,22 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public Command setElevateCommand(int newPosition) {
-    return this.runOnce(
-        () -> {
-          this.currentPosition = newPosition;
-          double position = Constants.elevatorPositions[this.currentPosition];
+    return this.runOnce(() -> {
+      this.currentPosition = newPosition;
+      double position = Constants.elevatorPositions[this.currentPosition];
 
-          leftController.setReference(position, ControlType.kPosition);
-          rightController.setReference(position, ControlType.kPosition);
-        });
+      leftController.setReference(position, ControlType.kPosition);
+      rightController.setReference(position, ControlType.kPosition);
+    });
   }
 
   public Command changeElevateCommand(int positionChange) {
-    return this.runOnce(
-        () -> {
-          this.currentPosition = Math.min(this.currentPosition + positionChange, 2);
-          double position = Constants.elevatorPositions[this.currentPosition];
+    return this.runOnce(() -> {
+      this.currentPosition = Math.min(this.currentPosition + positionChange, 2);
+      double position = Constants.elevatorPositions[this.currentPosition];
 
-          leftController.setReference(position, ControlType.kPosition);
-          rightController.setReference(position, ControlType.kPosition);
-        });
+      leftController.setReference(position, ControlType.kPosition);
+      rightController.setReference(position, ControlType.kPosition);
+    });
   }
 }

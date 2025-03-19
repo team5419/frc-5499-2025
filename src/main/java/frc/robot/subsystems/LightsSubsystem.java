@@ -26,8 +26,7 @@ public class LightsSubsystem extends SubsystemBase {
   // // Create a new pattern that scrolls the rainbow pattern across the LED strip, moving at a
   // speed
   // // of 1 meter per second.
-  private final LEDPattern m_scrollingRainbow =
-      m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
+  private final LEDPattern m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
 
   public LightsSubsystem() {
     leds_left = new AddressableLED(RobotMap.LED_LEFT);

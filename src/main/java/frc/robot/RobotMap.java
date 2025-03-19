@@ -1,6 +1,7 @@
 package frc.robot;
 
 public class RobotMap {
+  // ---------- Drivetrain ----------
   public static final int FRONT_LEFT_ENCODER = 10;
   public static final int FRONT_LEFT_STEER = 11;
   public static final int FRONT_LEFT_DRIVE = 12;
@@ -19,13 +20,13 @@ public class RobotMap {
 
   public static final int PIGEON = 50;
 
-  // SparkMAX
+  // ---------- SparkMAX ----------
   public static final int LEFT_ELEVATOR = 10;
   public static final int RIGHT_ELEVATOR = 11;
   public static final int INTAKE = 20;
   public static final int DISLOGER = 30;
 
-  // RoboRIO ports
+  // ---------- RoboRIO ports ----------
   public static final int LED_LEFT = 7;
   public static final int LED_RIGHT = 8;
   public static final int BEAM_BREAK = 9;

@@ -11,24 +11,21 @@ import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax intake = new SparkMax(RobotMap.INTAKE, MotorType.kBrushless);
-  DigitalInput input = new DigitalInput(RobotMap.BEAM_BREAK); // make channel 9 a constant
-
-  public IntakeSubsystem() {}
+  DigitalInput input = new DigitalInput(RobotMap.BEAM_BREAK);
 
   public Command setIntakeCommand(double direction) {
     return Commands.runOnce(() -> intake.set(direction));
   }
 
   public Command setIntakeWithSensorCommand(double direction) {
-    return Commands.runOnce(
-        () -> {
-          intake.set(direction);
-          // if (input.get()) {
-          //   intake.set(0);
-          // } else {
-          //   intake.set(direction);
-          // }
-        });
+    return Commands.runOnce(() -> {
+      intake.set(direction);
+      // if (input.get()) {
+      //   intake.set(0);
+      // } else {
+      //   intake.set(direction);
+      // }
+    });
   }
 
   @Override

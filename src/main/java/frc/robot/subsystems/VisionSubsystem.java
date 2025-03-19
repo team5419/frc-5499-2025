@@ -37,21 +37,20 @@ public class VisionSubsystem extends SubsystemBase {
     this.gyro = drivetrain.getPigeon2();
 
     // Set up the pose estimator
-    modulePositionsSupplier =
-        () -> {
-          return Arrays.stream(drivetrain.getModules())
-              .map((SwerveModule<?, ?, ?> module) -> module.getCachedPosition())
-              .toArray(SwerveModulePosition[]::new);
-        };
+    modulePositionsSupplier = () -> {
+      return Arrays.stream(drivetrain.getModules())
+        .map((SwerveModule<?, ?, ?> module) -> module.getCachedPosition())
+        .toArray(SwerveModulePosition[]::new);
+    };
 
-    poseEstimator =
-        new SwerveDrivePoseEstimator(
-            drivetrain.getKinematics(),
-            drivetrain.getPigeon2().getRotation2d(),
-            modulePositionsSupplier.get(),
-            new Pose2d(),
-            stateStdDevs,
-            visionMeasurementStdDevs);
+    poseEstimator = new SwerveDrivePoseEstimator(
+      drivetrain.getKinematics(),
+      drivetrain.getPigeon2().getRotation2d(),
+      modulePositionsSupplier.get(),
+      new Pose2d(),
+      stateStdDevs,
+      visionMeasurementStdDevs
+    );
   }
 
   @Override
@@ -62,8 +61,7 @@ public class VisionSubsystem extends SubsystemBase {
     LimelightHelpers.SetRobotOrientation("limelight", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
 
     // Get the pose estimate
-    LimelightHelpers.PoseEstimate limelightMeasurement =
-        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
     // If our angular velocity is greater than 360 degrees per second, ignore vision updates
     boolean doRejectUpdate = false;
@@ -78,10 +76,10 @@ public class VisionSubsystem extends SubsystemBase {
       // Add it to your pose estimator
       poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
       poseEstimator.addVisionMeasurement(
-          limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
+        limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
     }
 
     poseEstimator.update(
-        new Rotation2d(gyro.getYaw().getValueAsDouble()), modulePositionsSupplier.get());
+      new Rotation2d(gyro.getYaw().getValueAsDouble()), modulePositionsSupplier.get());
   }
 }
