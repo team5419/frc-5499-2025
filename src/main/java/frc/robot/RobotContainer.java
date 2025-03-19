@@ -53,10 +53,11 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
-    drivetrain = TunerConstants.createDrivetrain();
-    elevator = new ElevatorSubsystem();
-    disloger = new DislogerSubsystem();
     lights = new LightsSubsystem();
+
+    drivetrain = TunerConstants.createDrivetrain();
+    elevator = new ElevatorSubsystem(lights);
+    disloger = new DislogerSubsystem();
     intake = new IntakeSubsystem();
     vision = new VisionSubsystem(drivetrain);
 
