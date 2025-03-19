@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -267,7 +266,8 @@ public class CommandSwerveDrivetrainSubsystem extends TunerSwerveDrivetrain impl
               });
     }
 
-    Logger.recordOutput("Swerve Drive Subsystem/Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
+    Logger.recordOutput(
+        "Swerve Drive Subsystem/Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
     Logger.recordOutput("Swerve Drive Subsystem/Pose", getPose());
     Logger.recordOutput("Swerve Drive Subsystem/Chassis Speed", getCurrentSpeeds());
   }
