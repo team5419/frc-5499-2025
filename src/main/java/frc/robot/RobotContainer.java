@@ -11,9 +11,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
@@ -39,7 +41,7 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController controller = new CommandXboxController(0);
 
   private final SwerveDriveSubsystem drivetrain;
   private final ElevatorSubsystem elevator;
@@ -80,46 +82,68 @@ public class RobotContainer {
     // ---------- Driving ----------
     drivetrain.setDefaultCommand(drivetrain.applyRequest(() ->
       drive
-        .withVelocityX(-joystick.getLeftY() * MaxSpeed)
-        .withVelocityY(-joystick.getLeftX() * MaxSpeed)
-        .withRotationalRate(-joystick.getRightX() * MaxAngularRate)
+        .withVelocityX(-controller.getLeftY() * MaxSpeed)
+        .withVelocityY(-controller.getLeftX() * MaxSpeed)
+        .withRotationalRate(-controller.getRightX() * MaxAngularRate)
       )
     );
 
     // ---------- honestly i have no idea what pressing x does while driving ----------
-    joystick.x().whileTrue(drivetrain.applyRequest(() ->
+    controller.x().whileTrue(drivetrain.applyRequest(() ->
         point.withModuleDirection(
-          new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX())
+          new Rotation2d(-controller.getLeftY(), -controller.getLeftX())
         )
       )
     );
 
-    joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    controller.back().and(controller.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    controller.back().and(controller.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    controller.start().and(controller.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    controller.start().and(controller.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // ---------- Intake ----------
-    joystick.rightTrigger().onTrue(intake.setIntakeCommand(1.0));
-    joystick.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
-    joystick.rightTrigger().onFalse(intake.setIntakeCommand(0));
-    joystick.leftTrigger().onFalse(intake.setIntakeCommand(0));
+    controller.rightTrigger().onTrue(
+      intake.setIntakeCommand(1.0)
+      .alongWith(Commands.runOnce(
+        () -> controller.setRumble(RumbleType.kRightRumble, 0.5))
+      )
+    );
+    controller.rightTrigger().onFalse(
+      intake.setIntakeCommand(0)
+      .alongWith(Commands.runOnce(
+        () -> controller.setRumble(RumbleType.kRightRumble, 0.0))
+      )
+    );
+
+    controller.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
+    controller.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
     // ---------- Elevator ----------
-    joystick.y().onTrue(elevator.changeElevateCommand(1));
-    joystick.a().onTrue(elevator.setElevateCommand(0));
+    controller.y().onTrue(elevator.changeElevateCommand(1));
+    controller.a().onTrue(elevator.setElevateCommand(0));
 
     // ---------- Disloger ----------
-    joystick.leftBumper().onTrue(disloger.getDislogeCommand(1));
-    joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
-    joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
-    joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
+    controller.leftBumper().onTrue(
+      disloger.getDislogeCommand(1)
+      .alongWith(Commands.runOnce(
+        () -> controller.setRumble(RumbleType.kLeftRumble, 0.5))
+      )
+    );
+    controller.leftBumper().onFalse(
+      disloger.getDislogeCommand(0)
+      .alongWith(Commands.runOnce(
+        () -> controller.setRumble(RumbleType.kLeftRumble, 0.0))
+      )
+    );
+
+    controller.rightBumper().onTrue(disloger.getDislogeCommand(-1));
+    controller.rightBumper().onFalse(disloger.getDislogeCommand(0));
 
     // ---------- Reset heading ----------
-    joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    controller.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // ---------- Slowmode ----------
-    joystick.leftStick().onTrue(
+    controller.leftStick().onTrue(
       drivetrain.runOnce(() -> {
         isSlowmode = !isSlowmode;
         if (isSlowmode) {
