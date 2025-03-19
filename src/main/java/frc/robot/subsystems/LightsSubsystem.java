@@ -29,7 +29,6 @@ public class LightsSubsystem extends SubsystemBase {
 
   // Rainbow pattern
   private final LEDPattern rainbowPattern = LEDPattern.rainbow(255, 255);
-  private final LEDPattern scrollingRainbowPattern = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), ledSpacing);
 
   // Disabled gradient
   private final LEDPattern disabledPattern = LEDPattern.gradient(
@@ -86,15 +85,19 @@ public class LightsSubsystem extends SubsystemBase {
     currentState = state;
   }
 
+  private LEDPattern getScrollPattern(LEDPattern pattern) {
+    return pattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), ledSpacing);
+  }
+
   @Override
   public void periodic() {
     LEDPattern currentPattern = defaultPattern;
     switch (currentState) {
-      case DISABLED: currentPattern = disabledPattern;
-      case IDLE: currentPattern = scrollingRainbowPattern;
-      case L1: currentPattern = l1Pattern;
-      case L2: currentPattern = l2Pattern;
-      case L3: currentPattern = l3Pattern;
+      case DISABLED: currentPattern = getScrollPattern(disabledPattern);
+      case IDLE: currentPattern = getScrollPattern(rainbowPattern);
+      case L1: currentPattern = getScrollPattern(l1Pattern);
+      case L2: currentPattern = getScrollPattern(l2Pattern);
+      case L3: currentPattern = getScrollPattern(l3Pattern);
       default: currentPattern = defaultPattern;
     }
 
