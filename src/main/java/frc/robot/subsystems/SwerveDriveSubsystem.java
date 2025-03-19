@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -51,6 +52,8 @@ public class SwerveDriveSubsystem extends TunerSwerveDrivetrain implements Subsy
       new SwerveRequest.SysIdSwerveSteerGains();
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization =
       new SwerveRequest.SysIdSwerveRotation();
+
+  public final Pigeon2 pidgey = getPigeon2();
 
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
   private final SysIdRoutine m_sysIdRoutineTranslation =

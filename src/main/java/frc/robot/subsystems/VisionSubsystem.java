@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class VisionSubsystem extends SubsystemBase {
-  private final Pigeon2 gyro;
+  private final Pigeon2 pidgey;
   private final SwerveDrivePoseEstimator poseEstimator;
   private final Supplier<SwerveModulePosition[]> modulePositionsSupplier;
 
@@ -36,7 +36,7 @@ public class VisionSubsystem extends SubsystemBase {
   private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
 
   public VisionSubsystem(SwerveDriveSubsystem drivetrain) {
-    this.gyro = drivetrain.getPigeon2();
+    this.pidgey = drivetrain.pidgey;
 
     // Set up the pose estimator
     modulePositionsSupplier = () -> {
@@ -67,7 +67,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     // If our angular velocity is greater than 360 degrees per second, ignore vision updates
     boolean doRejectUpdate = false;
-    if (Math.abs(gyro.getAngularVelocityXDevice().getValueAsDouble()) > 360) {
+    if (Math.abs(pidgey.getAngularVelocityXDevice().getValueAsDouble()) > 360) {
       doRejectUpdate = true;
     }
     if (limelightMeasurement.tagCount == 0) {
