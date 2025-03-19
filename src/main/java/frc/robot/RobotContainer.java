@@ -11,9 +11,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
@@ -100,9 +102,20 @@ public class RobotContainer {
     controller.start().and(controller.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // ---------- Intake ----------
-    controller.rightTrigger().onTrue(intake.setIntakeCommand(1.0));
+    controller.rightTrigger().onTrue(
+      intake.setIntakeCommand(1.0)
+      .alongWith(Commands.runOnce(
+        () -> controller.setRumble(RumbleType.kBothRumble, 0.5))
+      )
+    );
+    controller.rightTrigger().onFalse(
+      intake.setIntakeCommand(0)
+      .alongWith(Commands.runOnce(
+        () -> controller.setRumble(RumbleType.kBothRumble, 0.0))
+      )
+    );
+
     controller.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
-    controller.rightTrigger().onFalse(intake.setIntakeCommand(0));
     controller.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
     // ---------- Elevator ----------
@@ -110,8 +123,19 @@ public class RobotContainer {
     controller.a().onTrue(elevator.setElevateCommand(0));
 
     // ---------- Disloger ----------
-    controller.leftBumper().onTrue(disloger.getDislogeCommand(1));
-    controller.leftBumper().onFalse(disloger.getDislogeCommand(0));
+    controller.leftBumper().onTrue(
+      disloger.getDislogeCommand(1)
+      .alongWith(Commands.runOnce(
+        () -> controller.setRumble(RumbleType.kBothRumble, 0.5))
+      )
+    );
+    controller.leftBumper().onFalse(
+      disloger.getDislogeCommand(0)
+      .alongWith(Commands.runOnce(
+        () -> controller.setRumble(RumbleType.kBothRumble, 0.0))
+      )
+    );
+
     controller.rightBumper().onTrue(disloger.getDislogeCommand(-1));
     controller.rightBumper().onFalse(disloger.getDislogeCommand(0));
 
