@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,7 +35,8 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // System.out.println(input.get());
+    Logger.recordOutput("Intake Subsystem/Intake Motor Output", intake.get());
+    Logger.recordOutput("Intake Subsystem/Beam Break Sensor", input.get());
   }
 
   public boolean getBeamBreak() {

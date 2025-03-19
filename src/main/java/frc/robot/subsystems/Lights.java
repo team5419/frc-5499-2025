@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -52,5 +54,8 @@ public class Lights extends SubsystemBase {
 
     leds_left.setData(left_buffer);
     // leds_right.setData(right_buffer);
+
+    Logger.recordOutput("Lights Subsystem/Left LED Buffer", left_buffer.toString());
+    // Logger.recordOutput("Lights Subsystem/Right LED Buffer", right_buffer.toString());
   }
 }

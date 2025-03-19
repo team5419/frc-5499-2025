@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements Subsystem so it can easily
  * be used in command-based projects.
@@ -264,6 +266,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
               });
     }
+
+    Logger.recordOutput("Swerve Drive Subsystem/Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
+    Logger.recordOutput("Swerve Drive Subsystem/Pose", getPose());
+    Logger.recordOutput("Swerve Drive Subsystem/Chassis Speed", getCurrentSpeeds());
   }
 
   private void startSimThread() {

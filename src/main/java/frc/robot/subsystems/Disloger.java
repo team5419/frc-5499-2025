@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,5 +14,10 @@ public class Disloger extends SubsystemBase {
 
   public Command getDislogeCommand(int direction) {
     return this.runOnce(() -> motor.set(direction));
+  }
+
+  @Override
+  public void periodic() {
+    Logger.recordOutput("Disloger Subsystem/Disloger Motor Output", motor.get());
   }
 }

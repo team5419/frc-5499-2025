@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -39,21 +41,14 @@ public class Elevator extends SubsystemBase {
         elevatorConfig.inverted(false),
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-
-    // Set Smart Motion / Smart Velocity parameters
-    // int smartMotionSlot = 0;
-    // m_pidController.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
-    // m_pidController.setSmartMotionMinOutputVelocity(minVel, smartMotionSlot);
-    // m_pidController.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
-    // m_pidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
-
-    // leftController.setReference(0, ControlType.kMAXMotionPositionControl);
-    // rightController.setReference(0, ControlType.kPosition);
   }
 
   @Override
   public void periodic() {
-    // System.out.println(leftEncoder.getPosition());
+    Logger.recordOutput("Elevator Subsystem/Left Encoder Position", leftEncoder.getPosition());
+    Logger.recordOutput("Elevator Subsystem/Right Encoder Position", rightEncoder.getPosition());
+    Logger.recordOutput("Elevator Subsystem/Left Encoder Velocity", leftEncoder.getVelocity());
+    Logger.recordOutput("Elevator Subsystem/Right Encoder Velocity", rightEncoder.getVelocity());
   }
 
   public Command setElevateCommand(int newPosition) {
@@ -73,12 +68,8 @@ public class Elevator extends SubsystemBase {
           this.currentPosition = Math.min(this.currentPosition + positionChange, 2);
           double position = Constants.elevatorPositions[this.currentPosition];
 
-          leftController.setReference(
-              position, ControlType.kPosition /*, ClosedLoopSlot.kSlot0, 1.0 */);
-          rightController.setReference(
-              position, ControlType.kPosition /*, ClosedLoopSlot.kSlot0, 1.0 */);
-          // leftController.setReference(position, ControlType.kPosition);
-          // rightController.setReference(position, ControlType.kPosition);
+          leftController.setReference(position, ControlType.kPosition);
+          rightController.setReference(position, ControlType.kPosition);
         });
   }
 }

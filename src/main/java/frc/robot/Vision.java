@@ -1,7 +1,5 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Radian;
-
 import java.util.Arrays;
 import java.util.function.Supplier;
 
