@@ -95,9 +95,9 @@ public class LightsSubsystem extends SubsystemBase {
     switch (currentState) {
       case DISABLED: currentPattern = getScrollPattern(disabledPattern);
       case IDLE: currentPattern = getScrollPattern(rainbowPattern);
-      case L1: currentPattern = getScrollPattern(l1Pattern);
-      case L2: currentPattern = getScrollPattern(l2Pattern);
-      case L3: currentPattern = getScrollPattern(l3Pattern);
+      case L1: currentPattern = l1Pattern;
+      case L2: currentPattern = l2Pattern;
+      case L3: currentPattern = l3Pattern;
       default: currentPattern = defaultPattern;
     }
 
