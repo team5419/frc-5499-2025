@@ -12,6 +12,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,6 +51,7 @@ public class RobotContainer {
   private final Disloger disloger;
   private final Lights lights;
   private final Intake intake;
+  private final Vision vision;
 
   private boolean isSlowmode = false;
 
@@ -60,6 +63,7 @@ public class RobotContainer {
     disloger = new Disloger();
     lights = new Lights();
     intake = new Intake();
+    vision = new Vision(drivetrain);
 
     NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
     NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));

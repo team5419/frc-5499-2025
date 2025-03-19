@@ -1,18 +1,58 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Radian;
+
+import java.util.Arrays;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveModule;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class Vision extends SubsystemBase {
   private final Pigeon2 gyro;
   private final SwerveDrivePoseEstimator poseEstimator;
+  private final Supplier<SwerveModulePosition[]> modulePositionsSupplier;
 
-  public Vision(Pigeon2 gyro, SwerveDrivePoseEstimator poseEstimator) {
-    this.gyro = gyro;
-    this.poseEstimator = poseEstimator;
+  /**
+   * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
+   * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
+   */
+  private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+
+  /**
+   * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
+   * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
+   */
+  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
+
+  public Vision(CommandSwerveDrivetrain drivetrain) {
+    this.gyro = drivetrain.getPigeon2();
+
+    // Set up the pose estimator
+    modulePositionsSupplier = () -> {
+      return Arrays.stream(drivetrain.getModules())
+                   .map((SwerveModule<?, ?, ?> module) -> module.getCachedPosition())
+                   .toArray(SwerveModulePosition[]::new);
+    };
+
+    poseEstimator = new SwerveDrivePoseEstimator(
+                      drivetrain.getKinematics(),
+                      drivetrain.getPigeon2().getRotation2d(),
+                      modulePositionsSupplier.get(),
+                      new Pose2d(),
+                      stateStdDevs,
+                      visionMeasurementStdDevs
+                    );
   }
 
   @Override
@@ -29,6 +69,11 @@ public class Vision extends SubsystemBase {
     poseEstimator.addVisionMeasurement(
       limelightMeasurement.pose,
       limelightMeasurement.timestampSeconds
+    );
+
+    poseEstimator.update(
+      new Rotation2d(gyro.getYaw().getValue().in(Radian)),
+      modulePositionsSupplier.get()
     );
   }
 }
