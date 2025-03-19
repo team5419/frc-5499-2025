@@ -82,7 +82,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     poseEstimator.update(
-      new Rotation2d(gyro.getYaw().getValueAsDouble()),
+      new Rotation2d(pidgey.getYaw().getValueAsDouble()),
       modulePositionsSupplier.get()
     );
 
