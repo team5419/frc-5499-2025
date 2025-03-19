@@ -10,6 +10,8 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,7 +68,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Disloger Stop", disloger.getDislogeCommand(0));
     NamedCommands.registerCommand("Disloger Reverse", disloger.getDislogeCommand(-1));
     NamedCommands.registerCommand("Intake", intake.setIntakeCommand(1));
-    NamedCommands.registerCommand("Intake Reverse", intake.setIntakeCommand(-1));
+    NamedCommands.registerCommand("Outtake", intake.setIntakeCommand(-1));
     NamedCommands.registerCommand("Intake Stop", intake.setIntakeCommand(0));
 
     autoChooser = AutoBuilder.buildAutoChooser("Move Forward Short");
@@ -77,7 +79,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // ---------- Driving ----------
-    // TODO: Add deadband
+    // TODO: Add controller deadbanding
     // Drivetrain will execute this command periodically
     drivetrain.setDefaultCommand(
         drivetrain.applyRequest(
@@ -87,49 +89,35 @@ public class RobotContainer {
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed)
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
 
-    // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick
-        .b()
+        .x()
         .whileTrue(
             drivetrain.applyRequest(
                 () ->
                     point.withModuleDirection(
                         new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
-    // Run SysId routines when holding back/start and X/Y.
-    // Note that each routine should be run exactly once in a single log.
     joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
     joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // ---------- Intake ----------
-    // joystick.rightBumper().onTrue(intake.setIntakeWithSensorCommand(0.25));
-    // joystick.leftBumper().onTrue(intake.setIntakeCommand(-0.25));
-    // joystick.rightBumper().onFalse(intake.setIntakeCommand(0));
-    // joystick.leftBumper().onFalse(intake.setIntakeCommand(0));
     joystick.rightTrigger().onTrue(intake.setIntakeCommand(1.0));
     joystick.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
     joystick.rightTrigger().onFalse(intake.setIntakeCommand(0));
     joystick.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
     // ---------- Elevator ----------
-    // joystick.rightTrigger().onTrue(elevator.getElevateCommand(1));
-    // joystick.rightTrigger().onFalse(elevator.getElevateCommand(0));
-    // joystick.leftTrigger().onTrue(elevator.getElevateCommand(0.5));
-    // joystick.leftTrigger().onFalse(elevator.getElevateCommand(0));
     joystick.y().onTrue(elevator.changeElevateCommand(1));
     joystick.a().onTrue(elevator.setElevateCommand(0));
+
+    // ---------- Disloger ----------
 
     joystick.leftBumper().onTrue(disloger.getDislogeCommand(1));
     joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
     joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
     joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
-
-    // ---------- Disloger ----------
-
-    // joystick.leftTrigger().onTrue(disloger.getDislogeCommand(1));
-    // joystick.leftTrigger().onFalse(disloger.getDislogeCommand(0));
 
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -151,26 +139,7 @@ public class RobotContainer {
                 }));
   }
 
-  // @Override
-  // public void periodic() {
-  //   ChassisSpeeds currentSpeeds = drivetrain.getCurrentSpeeds();
-  //   double vx = currentSpeeds.vxMetersPerSecond;
-  //   double vy = currentSpeeds.vyMetersPerSecond;
-  //   return Math.sqrt(vx * vx + vy * vy);
-  // }
-
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
-    // // return new PathPlannerPath("Test Path");
-    // try {
-    //   // Load the path you want to follow using its name in the GUI
-    //   PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-
-    //   // Create a path following command using AutoBuilder. This will also trigger event markers.
-    //   return AutoBuilder.followPath(path);
-    // } catch (Exception e) {
-    //   DriverStation.reportError("error building auto: " + e.getMessage(), e.getStackTrace());
-    //   return Commands.none();
-    // }
   }
 }
