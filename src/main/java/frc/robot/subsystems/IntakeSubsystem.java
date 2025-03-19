@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
-public class Intake extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax intake = new SparkMax(RobotMap.INTAKE, MotorType.kBrushless);
   DigitalInput input = new DigitalInput(RobotMap.BEAM_BREAK); // make channel 9 a constant
 
-  public Intake() {}
+  public IntakeSubsystem() {}
 
   public Command setIntakeCommand(double direction) {
     return Commands.runOnce(() -> intake.set(direction));

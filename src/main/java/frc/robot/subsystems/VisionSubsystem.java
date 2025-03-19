@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -14,9 +14,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
 
-public class Vision extends SubsystemBase {
+public class VisionSubsystem extends SubsystemBase {
   private final Pigeon2 gyro;
   private final SwerveDrivePoseEstimator poseEstimator;
   private final Supplier<SwerveModulePosition[]> modulePositionsSupplier;
@@ -33,7 +34,7 @@ public class Vision extends SubsystemBase {
    */
   private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
 
-  public Vision(CommandSwerveDrivetrain drivetrain) {
+  public VisionSubsystem(CommandSwerveDrivetrainSubsystem drivetrain) {
     this.gyro = drivetrain.getPigeon2();
 
     // Set up the pose estimator

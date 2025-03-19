@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
-public class Lights extends SubsystemBase {
+public class LightsSubsystem extends SubsystemBase {
   private final AddressableLED leds_left;
   // private final AddressableLED leds_right;
   private AddressableLEDBuffer left_buffer;
@@ -30,7 +30,7 @@ public class Lights extends SubsystemBase {
   private final LEDPattern m_scrollingRainbow =
       m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
 
-  public Lights() {
+  public LightsSubsystem() {
     leds_left = new AddressableLED(RobotMap.LED_LEFT);
     // leds_right = new AddressableLED(RobotMap.LED_RIGHT);
 

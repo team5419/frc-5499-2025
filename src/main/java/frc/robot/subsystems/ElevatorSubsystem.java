@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 
-public class Elevator extends SubsystemBase {
+public class ElevatorSubsystem extends SubsystemBase {
   private final SparkMax leftElevator = new SparkMax(RobotMap.LEFT_ELEVATOR, MotorType.kBrushless);
   private final SparkMax rightElevator =
       new SparkMax(RobotMap.RIGHT_ELEVATOR, MotorType.kBrushless);
@@ -30,7 +30,7 @@ public class Elevator extends SubsystemBase {
 
   private int currentPosition = 0;
 
-  public Elevator() {
+  public ElevatorSubsystem() {
     elevatorConfig.closedLoop.p(0.1).outputRange(-1, 1);
 
     rightElevator.configure(

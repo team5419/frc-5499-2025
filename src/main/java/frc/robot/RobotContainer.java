@@ -21,11 +21,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Disloger;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.CommandSwerveDrivetrainSubsystem;
+import frc.robot.subsystems.DislogerSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightsSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -46,12 +47,12 @@ public class RobotContainer {
 
   private final CommandXboxController joystick = new CommandXboxController(0);
 
-  private final CommandSwerveDrivetrain drivetrain;
-  private final Elevator elevator;
-  private final Disloger disloger;
-  private final Lights lights;
-  private final Intake intake;
-  private final Vision vision;
+  private final CommandSwerveDrivetrainSubsystem drivetrain;
+  private final ElevatorSubsystem elevator;
+  private final DislogerSubsystem disloger;
+  private final LightsSubsystem lights;
+  private final IntakeSubsystem intake;
+  private final VisionSubsystem vision;
 
   private boolean isSlowmode = false;
 
@@ -59,11 +60,11 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain = TunerConstants.createDrivetrain();
-    elevator = new Elevator();
-    disloger = new Disloger();
-    lights = new Lights();
-    intake = new Intake();
-    vision = new Vision(drivetrain);
+    elevator = new ElevatorSubsystem();
+    disloger = new DislogerSubsystem();
+    lights = new LightsSubsystem();
+    intake = new IntakeSubsystem();
+    vision = new VisionSubsystem(drivetrain);
 
     NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
     NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
