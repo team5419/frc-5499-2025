@@ -58,21 +58,33 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     // First, tell Limelight your robot's current orientation
-    double robotYaw = gyro.getYaw().getValueAsDouble();
-    LimelightHelpers.SetRobotOrientation("", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+    // double robotYaw = gyro.getYaw().getValueAsDouble();
+    double robotYaw = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
+    LimelightHelpers.SetRobotOrientation("limelight", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
 
     // Get the pose estimate
-    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
+    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
-    // Add it to your pose estimator
-    poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-    poseEstimator.addVisionMeasurement(
-      limelightMeasurement.pose,
-      limelightMeasurement.timestampSeconds
-    );
+    // If our angular velocity is greater than 360 degrees per second, ignore vision updates
+    boolean doRejectUpdate = false;
+    if (Math.abs(gyro.getAngularVelocityXDevice().getValueAsDouble()) > 360) {
+      doRejectUpdate = true;
+    }
+    if (limelightMeasurement.tagCount == 0) {
+      doRejectUpdate = true;
+    }
+
+    if (!doRejectUpdate) {
+      // Add it to your pose estimator
+      poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+      poseEstimator.addVisionMeasurement(
+        limelightMeasurement.pose,
+        limelightMeasurement.timestampSeconds
+      );
+    }
 
     poseEstimator.update(
-      new Rotation2d(gyro.getYaw().getValue().in(Radian)),
+      new Rotation2d(gyro.getYaw().getValueAsDouble()),
       modulePositionsSupplier.get()
     );
   }
