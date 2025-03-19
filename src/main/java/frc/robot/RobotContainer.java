@@ -105,13 +105,13 @@ public class RobotContainer {
     controller.rightTrigger().onTrue(
       intake.setIntakeCommand(1.0)
       .alongWith(Commands.runOnce(
-        () -> controller.setRumble(RumbleType.kBothRumble, 0.5))
+        () -> controller.setRumble(RumbleType.kRightRumble, 0.5))
       )
     );
     controller.rightTrigger().onFalse(
       intake.setIntakeCommand(0)
       .alongWith(Commands.runOnce(
-        () -> controller.setRumble(RumbleType.kBothRumble, 0.0))
+        () -> controller.setRumble(RumbleType.kRightRumble, 0.0))
       )
     );
 
@@ -126,13 +126,13 @@ public class RobotContainer {
     controller.leftBumper().onTrue(
       disloger.getDislogeCommand(1)
       .alongWith(Commands.runOnce(
-        () -> controller.setRumble(RumbleType.kBothRumble, 0.5))
+        () -> controller.setRumble(RumbleType.kLeftRumble, 0.5))
       )
     );
     controller.leftBumper().onFalse(
       disloger.getDislogeCommand(0)
       .alongWith(Commands.runOnce(
-        () -> controller.setRumble(RumbleType.kBothRumble, 0.0))
+        () -> controller.setRumble(RumbleType.kLeftRumble, 0.0))
       )
     );
 
