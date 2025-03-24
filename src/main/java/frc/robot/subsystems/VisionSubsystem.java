@@ -14,6 +14,8 @@ import frc.robot.LimelightHelpers;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 public class VisionSubsystem extends SubsystemBase {
   private final Pigeon2 pidgey;
   private final SwerveDrivePoseEstimator poseEstimator;
@@ -79,7 +81,8 @@ public class VisionSubsystem extends SubsystemBase {
         limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
     }
 
-    poseEstimator.update(
-      new Rotation2d(pidgey.getYaw().getValueAsDouble()), modulePositionsSupplier.get());
+    poseEstimator.update(new Rotation2d(pidgey.getYaw().getValueAsDouble()), modulePositionsSupplier.get());
+
+    Logger.recordOutput("Vision Subsytem/Pose Estimate", poseEstimator.getEstimatedPosition());
   }
 }
