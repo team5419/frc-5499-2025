@@ -60,54 +60,39 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command setElevateCommand(int newPosition) {
     return this.runOnce(() -> {
       this.currentPosition = newPosition;
-      double position = Constants.elevatorPositions[this.currentPosition];
-
-      leftController.setReference(position, ControlType.kPosition);
-      rightController.setReference(position, ControlType.kPosition);
-
-      LightsState state;
-      switch (this.currentPosition) {
-        case 0:
-          state = LightsState.L1;
-          break;
-        case 1:
-          state = LightsState.L2;
-          break;
-        case 2:
-          state = LightsState.L3;
-          break;
-        default:
-          state = LightsState.IDLE;
-          break;
-      }
-      lights.setState(state);
+      updateElevator();
     });
   }
 
   public Command changeElevateCommand(int positionChange) {
     return this.runOnce(() -> {
       this.currentPosition = Math.min(this.currentPosition + positionChange, 2);
-      double position = Constants.elevatorPositions[this.currentPosition];
-
-      leftController.setReference(position, ControlType.kPosition);
-      rightController.setReference(position, ControlType.kPosition);
-
-      LightsState state;
-      switch (this.currentPosition) {
-        case 0:
-          state = LightsState.L1;
-          break;
-        case 1:
-          state = LightsState.L2;
-          break;
-        case 2:
-          state = LightsState.L3;
-          break;
-        default:
-          state = LightsState.IDLE;
-          break;
-      }
-      lights.setState(state);
+      updateElevator();
+      
     });
+  }
+
+  public void updateElevator(){
+    double position = Constants.elevatorPositions[this.currentPosition] * Constants.elevatorConversion;
+
+    leftController.setReference(position, ControlType.kPosition);
+    rightController.setReference(position, ControlType.kPosition);
+
+    LightsState state;
+    switch (this.currentPosition) {
+      case 0:
+        state = LightsState.L1;
+        break;
+      case 1:
+        state = LightsState.L2;
+        break;
+      case 2:
+        state = LightsState.L3;
+        break;
+      default:
+        state = LightsState.IDLE;
+        break;
+    }
+    lights.setState(state);
   }
 }

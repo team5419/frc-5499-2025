@@ -36,4 +36,6 @@ public final class Constants {
   }
 
   public static final double[] elevatorPositions = {0, 3.5, 14.2};
+  public static final double elevatorConversion = 5.912;
 }
+
