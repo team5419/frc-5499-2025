@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.robot.subsystems.LightsSubsystem.LightsState;
+
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -28,8 +30,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private int currentPosition = 0;
 
-  public ElevatorSubsystem() {
-    elevatorConfig.closedLoop.p(0.1).outputRange(-1, 1);
+  private final LightsSubsystem lights;
+
+  public ElevatorSubsystem(LightsSubsystem lights) {
+    this.lights = lights;
+
+    elevatorConfig.closedLoop.p(0.15).outputRange(-1, 1);
 
     rightElevator.configure(
       elevatorConfig.inverted(true),
@@ -58,6 +64,23 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       leftController.setReference(position, ControlType.kPosition);
       rightController.setReference(position, ControlType.kPosition);
+
+      LightsState state;
+      switch (this.currentPosition) {
+        case 0:
+          state = LightsState.L1;
+          break;
+        case 1:
+          state = LightsState.L2;
+          break;
+        case 2:
+          state = LightsState.L3;
+          break;
+        default:
+          state = LightsState.IDLE;
+          break;
+      }
+      lights.setState(state);
     });
   }
 
@@ -68,6 +91,23 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       leftController.setReference(position, ControlType.kPosition);
       rightController.setReference(position, ControlType.kPosition);
+
+      LightsState state;
+      switch (this.currentPosition) {
+        case 0:
+          state = LightsState.L1;
+          break;
+        case 1:
+          state = LightsState.L2;
+          break;
+        case 2:
+          state = LightsState.L3;
+          break;
+        default:
+          state = LightsState.IDLE;
+          break;
+      }
+      lights.setState(state);
     });
   }
 }

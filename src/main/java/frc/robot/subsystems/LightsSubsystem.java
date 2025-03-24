@@ -3,57 +3,118 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.util.Map;
+
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.LEDPattern.GradientType;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
-import org.littletonrobotics.junction.Logger;
 
 public class LightsSubsystem extends SubsystemBase {
-  private final AddressableLED leds_left;
-  // private final AddressableLED leds_right;
-  private AddressableLEDBuffer left_buffer;
-  // private AddressableLEDBuffer right_buffer;
+  private final AddressableLED leds;
+  private AddressableLEDBuffer buffer;
 
-  // // all hues at maximum saturation and half brightness
-  private final LEDPattern m_rainbow = LEDPattern.rainbow(255, 255);
+  // Our LED strip has a density of 30 LEDs per meter
+  private static final Distance ledSpacing = Meters.of(1 / 30.0);
 
-  // // Our LED strip has a density of 30 LEDs per meter
-  private static final Distance kLedSpacing = Meters.of(1 / 30.0);
+  private boolean isEnabledPrev = false;
 
-  // // Create a new pattern that scrolls the rainbow pattern across the LED strip, moving at a
-  // speed
-  // // of 1 meter per second.
-  private final LEDPattern m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
+  // ---------- LED Patterns ----------
+  // Default pattern
+  private final LEDPattern defaultPattern = LEDPattern.solid(Color.fromHSV(0, 0, 100));
+
+  // Rainbow pattern
+  private final LEDPattern rainbowPattern = LEDPattern.rainbow(255, 255);
+
+  // Disabled gradient
+  private final LEDPattern disabledPattern = LEDPattern.gradient(
+    GradientType.kContinuous,
+    Color.kRed,
+    Color.kOrange
+  );
+
+  // L1 pattern
+  private final LEDPattern l1Pattern = LEDPattern.steps(Map.of(
+    0, Color.kRed,
+    0.33, Color.kOrange,
+    0.66, Color.kOrange
+  ));
+
+  // L2 pattern
+  private final LEDPattern l2Pattern = LEDPattern.steps(Map.of(
+    0, Color.kOrange,
+    0.33, Color.kRed,
+    0.66, Color.kOrange
+  ));
+
+  // L3 pattern
+  private final LEDPattern l3Pattern = LEDPattern.steps(Map.of(
+    0, Color.kOrange,
+    0.33, Color.kOrange,
+    0.66, Color.kRed
+  ));
+
+  public static enum LightsState {
+    DISABLED, IDLE, INTAKE, CLIMBING, L1, L2, L3,
+  }
+
+  private LightsState currentState = LightsState.DISABLED;
 
   public LightsSubsystem() {
-    leds_left = new AddressableLED(RobotMap.LED_LEFT);
-    // leds_right = new AddressableLED(RobotMap.LED_RIGHT);
+    leds = new AddressableLED(RobotMap.LED_STRIP);
 
-    left_buffer = new AddressableLEDBuffer(30);
-    // right_buffer = new AddressableLEDBuffer(30);
+    buffer = new AddressableLEDBuffer(30);
 
-    leds_left.setLength(left_buffer.getLength());
-    // leds_right.setLength(right_buffer.getLength());
+    leds.setLength(buffer.getLength());
 
-    leds_left.setData(left_buffer);
-    // leds_right.setData(right_buffer);
+    leds.setData(buffer);
 
-    leds_left.start();
-    // leds_right.start();
+    leds.start();
+  }
+
+  public void setState(LightsState state) {
+    currentState = state;
+  }
+
+  private LEDPattern getScrollPattern(LEDPattern pattern) {
+    return pattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), ledSpacing);
   }
 
   @Override
   public void periodic() {
-    m_scrollingRainbow.applyTo(left_buffer);
-    // m_scrollingRainbow.applyTo(right_buffer);
+    LEDPattern pattern = defaultPattern;
 
-    leds_left.setData(left_buffer);
-    // leds_right.setData(right_buffer);
+    isEnabledPrev = DriverStation.isEnabled();
+    System.out.println(DriverStation.isEnabled());
+    if (isEnabledPrev != DriverStation.isEnabled()) {
+      currentState = DriverStation.isEnabled() ? LightsState.IDLE : LightsState.DISABLED;
+    }
 
-    Logger.recordOutput("Lights Subsystem/Left LED Buffer", left_buffer.toString());
-    // Logger.recordOutput("Lights Subsystem/Right LED Buffer", right_buffer.toString());
+    switch (currentState) {
+      case DISABLED:
+        pattern = getScrollPattern(disabledPattern);
+        break;
+      case L1:
+        pattern = l1Pattern;
+        break;
+      case L2:
+        pattern = l2Pattern;
+        break;
+      case L3:
+        pattern = l3Pattern;
+        break;
+      default:
+        pattern = getScrollPattern(rainbowPattern);
+        break;
+    }
+
+    pattern.applyTo(buffer);
+
+    leds.setData(buffer);
   }
 }
