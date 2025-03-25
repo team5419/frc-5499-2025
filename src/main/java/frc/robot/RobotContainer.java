@@ -47,7 +47,7 @@ public class RobotContainer {
   private final DislogerSubsystem disloger;
   private final LightsSubsystem lights;
   private final IntakeSubsystem intake;
-  private final VisionSubsystem vision;
+  // private final VisionSubsystem vision;
 
   private boolean isSlowmode = false;
 
@@ -60,7 +60,7 @@ public class RobotContainer {
     elevator = new ElevatorSubsystem(lights);
     disloger = new DislogerSubsystem();
     intake = new IntakeSubsystem();
-    vision = new VisionSubsystem(drivetrain);
+    // vision = new VisionSubsystem(drivetrain);
 
     lights.setState(LightsState.DISABLED);
 

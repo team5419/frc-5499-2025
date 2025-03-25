@@ -90,7 +90,6 @@ public class LightsSubsystem extends SubsystemBase {
     LEDPattern pattern = defaultPattern;
 
     isEnabledPrev = DriverStation.isEnabled();
-    System.out.println(DriverStation.isEnabled());
     if (isEnabledPrev != DriverStation.isEnabled()) {
       currentState = DriverStation.isEnabled() ? LightsState.IDLE : LightsState.DISABLED;
     }
