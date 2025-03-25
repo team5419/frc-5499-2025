@@ -60,10 +60,10 @@ public class VisionSubsystem extends SubsystemBase {
     // First, tell Limelight your robot's current orientation
     double robotYaw = pidgey.getYaw().getValueAsDouble();
     // double robotYaw = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
-    LimelightHelpers.SetRobotOrientation("limelight", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+    LimelightHelpers.SetRobotOrientation("", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
 
     // Get the pose estimate
-    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
 
     // If our angular velocity is greater than 360 degrees per second, ignore vision updates
     boolean doRejectUpdate = false;
@@ -84,5 +84,7 @@ public class VisionSubsystem extends SubsystemBase {
     poseEstimator.update(new Rotation2d(pidgey.getYaw().getValueAsDouble()), modulePositionsSupplier.get());
 
     Logger.recordOutput("Vision Subsytem/Pose Estimate", poseEstimator.getEstimatedPosition());
+    Logger.recordOutput("Vision Subsystem/TX", LimelightHelpers.getTX(""));
+    Logger.recordOutput("Vision Subsystem/TY", LimelightHelpers.getTY(""));
   }
 }
