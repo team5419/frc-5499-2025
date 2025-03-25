@@ -72,7 +72,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     });
   }
 
-  public void updateElevator(){
+  public void updateElevator() {
     double position = Constants.elevatorPositions[this.currentPosition] * Constants.elevatorConversion;
 
     leftController.setReference(position, ControlType.kPosition);
@@ -93,6 +93,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         state = LightsState.IDLE;
         break;
     }
+
     lights.setState(state);
   }
 }

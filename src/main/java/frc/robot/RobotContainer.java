@@ -13,7 +13,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -173,8 +172,7 @@ public class RobotContainer {
   // simple proportional ranging control with Limelight's "ty" value
   // this works best if your Limelight's mount height and target mount height are different.
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
-  double limelight_range_proportional()
-  {
+  double limelight_range_proportional() {
     double kP = .1;
     double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
     targetingForwardSpeed *= MaxSpeed;
@@ -185,37 +183,35 @@ public class RobotContainer {
   public void drive() {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    var xSpeed =
-        -xSpeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftY(), 0.02))
-            * MaxSpeed;
+    var xSpeed = -xSpeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftY(), 0.02)) * MaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    var ySpeed =
-        -ySpeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftX(), 0.02))
-            * MaxSpeed;
+    var ySpeed = -ySpeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftX(), 0.02)) * MaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    var rot =
-        -rotLimiter.calculate(MathUtil.applyDeadband(joystick.getRightX(), 0.02))
-            * MaxAngularRate;
+    var rot = -rotLimiter.calculate(MathUtil.applyDeadband(joystick.getRightX(), 0.02)) * MaxAngularRate;
 
     // while the A-button is pressed, overwrite some of the driving values with the output of our limelight methods
-    if(joystick.x().getAsBoolean())
-    {
-        final var rot_limelight = limelight_aim_proportional();
-        rot = rot_limelight;
+    if (joystick.x().getAsBoolean()) {
+      final var rot_limelight = limelight_aim_proportional();
+      rot = rot_limelight;
 
-        final var forward_limelight = limelight_range_proportional();
-        xSpeed = forward_limelight;
+      final var forward_limelight = limelight_range_proportional();
+      xSpeed = forward_limelight;
     }
 
+    // Create final copies of local variables to use in lambda
+    final double finalXSpeed = xSpeed;
+    final double finalYSpeed = ySpeed;
+    final double finalRot = rot;
+
     // drivetrain.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());
-    drive.withVelocityX(xSpeed).withVelocityY(ySpeed).withRotationalRate(rot);
+    drivetrain.applyRequest(() -> drive.withVelocityX(finalXSpeed).withVelocityY(finalYSpeed).withRotationalRate(finalRot));
   }
 
   public Command getAutonomousCommand() {
