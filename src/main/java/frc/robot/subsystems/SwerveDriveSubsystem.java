@@ -231,21 +231,21 @@ public class SwerveDriveSubsystem extends TunerSwerveDrivetrain implements Subsy
     PIDConstants rotationConstants = new PIDConstants(10, 0.0, 0.0);
 
     AutoBuilder.configure(
-        this::getPose,
-        this::resetPose,
-        this::getCurrentSpeeds,
-        (speeds, feedforwards) ->
-            this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds)),
-        new PPHolonomicDriveController(translateConstants, rotationConstants),
-        config,
-        () -> {
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
-        this);
+      this::getPose,
+      this::resetPose,
+      this::getCurrentSpeeds,
+      (speeds, feedforwards) -> this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds)),
+      new PPHolonomicDriveController(translateConstants, rotationConstants),
+      config,
+      () -> {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this
+    );
   }
 
   @Override

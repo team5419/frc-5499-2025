@@ -11,6 +11,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+
+import static edu.wpi.first.units.Units.Radian;
+
 import java.util.Arrays;
 import java.util.function.Supplier;
 
@@ -67,9 +70,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     // If our angular velocity is greater than 360 degrees per second, ignore vision updates
     boolean doRejectUpdate = false;
-    if (Math.abs(pidgey.getAngularVelocityXDevice().getValueAsDouble()) > 360) {
-      doRejectUpdate = true;
-    }
+    // if (Math.abs(pidgey.getAngularVelocityXDevice().getValueAsDouble()) > 360) {
+    //   doRejectUpdate = true;
+    // }
     if (limelightMeasurement.tagCount == 0) {
       doRejectUpdate = true;
     }
@@ -77,14 +80,15 @@ public class VisionSubsystem extends SubsystemBase {
     if (!doRejectUpdate) {
       // Add it to your pose estimator
       poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-      poseEstimator.addVisionMeasurement(
-        limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
+      poseEstimator.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
     }
 
-    poseEstimator.update(new Rotation2d(pidgey.getYaw().getValueAsDouble()), modulePositionsSupplier.get());
+    poseEstimator.update(pidgey.getRotation2d(), modulePositionsSupplier.get());
 
-    Logger.recordOutput("Vision Subsytem/Pose Estimate", poseEstimator.getEstimatedPosition());
+    Logger.recordOutput("Vision Subsystem/Estimated Yaw", limelightMeasurement.pose);
+    Logger.recordOutput("Vision Subsystem/Pose Estimate", poseEstimator.getEstimatedPosition());
     Logger.recordOutput("Vision Subsystem/TX", LimelightHelpers.getTX(""));
     Logger.recordOutput("Vision Subsystem/TY", LimelightHelpers.getTY(""));
+    Logger.recordOutput("Vision Subsystem/Tag Count", limelightMeasurement.tagCount);
   }
 }

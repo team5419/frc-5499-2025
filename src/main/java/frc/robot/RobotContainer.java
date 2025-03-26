@@ -11,7 +11,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -55,10 +54,6 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
 
-  private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
-
   public RobotContainer() {
     lights = new LightsSubsystem();
 
@@ -88,13 +83,13 @@ public class RobotContainer {
 
   private void configureBindings() {
     // ---------- Driving ----------
-    // drivetrain.setDefaultCommand(drivetrain.applyRequest(() ->
-    //   drive
-    //     .withVelocityX(-joystick.getLeftY() * MaxSpeed)
-    //     .withVelocityY(-joystick.getLeftX() * MaxSpeed)
-    //     .withRotationalRate(-joystick.getRightX() * MaxAngularRate)
-    //   )
-    // );
+    drivetrain.setDefaultCommand(drivetrain.applyRequest(() ->
+      drive
+        .withVelocityX(-joystick.getLeftY() * MaxSpeed)
+        .withVelocityY(-joystick.getLeftX() * MaxSpeed)
+        .withRotationalRate(-joystick.getRightX() * MaxAngularRate)
+      )
+    );
 
     // // ---------- honestly i have no idea what pressing x does while driving ----------
     // joystick.x().whileTrue(drivetrain.applyRequest(() ->
@@ -178,40 +173,6 @@ public class RobotContainer {
     targetingForwardSpeed *= MaxSpeed;
     targetingForwardSpeed *= -1.0;
     return targetingForwardSpeed;
-  }
-
-  public void drive() {
-    // Get the x speed. We are inverting this because Xbox controllers return
-    // negative values when we push forward.
-    var xSpeed = -xSpeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftY(), 0.02)) * MaxSpeed;
-
-    // Get the y speed or sideways/strafe speed. We are inverting this because
-    // we want a positive value when we pull to the left. Xbox controllers
-    // return positive values when you pull to the right by default.
-    var ySpeed = -ySpeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftX(), 0.02)) * MaxSpeed;
-
-    // Get the rate of angular rotation. We are inverting this because we want a
-    // positive value when we pull to the left (remember, CCW is positive in
-    // mathematics). Xbox controllers return positive values when you pull to
-    // the right by default.
-    var rot = -rotLimiter.calculate(MathUtil.applyDeadband(joystick.getRightX(), 0.02)) * MaxAngularRate;
-
-    // while the A-button is pressed, overwrite some of the driving values with the output of our limelight methods
-    if (joystick.x().getAsBoolean()) {
-      final var rot_limelight = limelight_aim_proportional();
-      rot = rot_limelight;
-
-      final var forward_limelight = limelight_range_proportional();
-      xSpeed = forward_limelight;
-    }
-
-    // Create final copies of local variables to use in lambda
-    final double finalXSpeed = xSpeed;
-    final double finalYSpeed = ySpeed;
-    final double finalRot = rot;
-
-    // drivetrain.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());
-    drivetrain.applyRequest(() -> drive.withVelocityX(finalXSpeed).withVelocityY(finalYSpeed).withRotationalRate(finalRot));
   }
 
   public Command getAutonomousCommand() {
