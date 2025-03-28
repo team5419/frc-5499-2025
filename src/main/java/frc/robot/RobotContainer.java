@@ -34,10 +34,10 @@ public class RobotContainer {
 
   // Setting up bindings for necessary control of the swerve drive platform
   private final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.1)
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    new SwerveRequest.FieldCentric()
+      .withDeadband(MaxSpeed * 0.1)
+      .withRotationalDeadband(MaxAngularRate * 0.1)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -57,11 +57,13 @@ public class RobotContainer {
   public RobotContainer() {
     lights = new LightsSubsystem();
 
-    drivetrain = TunerConstants.createDrivetrain();
     elevator = new ElevatorSubsystem(lights);
     disloger = new DislogerSubsystem();
     intake = new IntakeSubsystem();
-    vision = new VisionSubsystem(drivetrain);
+    vision = new VisionSubsystem();
+    drivetrain = TunerConstants.createDrivetrain(vision);
+
+    drivetrain.configAutos();
 
     lights.setState(LightsState.DISABLED);
 
@@ -75,7 +77,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Outtake", intake.setIntakeCommand(-1));
     NamedCommands.registerCommand("Intake Stop", intake.setIntakeCommand(0));
 
-    autoChooser = AutoBuilder.buildAutoChooser("Move Forward Short");
+    autoChooser = AutoBuilder.buildAutoChooser("coral");
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureBindings();
@@ -152,7 +154,7 @@ public class RobotContainer {
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of
     // your limelight 3 feed, tx should return roughly 31 degrees.
-    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
+    double targetingAngularVelocity = LimelightHelpers.getTX("") * kP;
 
     // convert to radians per second for our drive method
     targetingAngularVelocity *= MaxAngularRate;
@@ -168,13 +170,14 @@ public class RobotContainer {
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
   double limelight_range_proportional() {
     double kP = 0.1;
-    double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
+    double targetingForwardSpeed = LimelightHelpers.getTY("") * kP;
     targetingForwardSpeed *= MaxSpeed;
     targetingForwardSpeed *= -1.0;
     return targetingForwardSpeed;
   }
 
   public Command getAutonomousCommand() {
+    System.out.println(autoChooser.getSelected().getName());
     return autoChooser.getSelected();
   }
 }
