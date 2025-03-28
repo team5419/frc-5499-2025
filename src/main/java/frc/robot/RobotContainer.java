@@ -142,8 +142,7 @@ public class RobotContainer {
   // "proportional control" is a control algorithm in which the output is proportional to the error.
   // in this case, we are going to return an angular velocity that is proportional to the
   // "tx" value from the Limelight.
-  double limelight_aim_proportional()
-  {
+  double limelight_aim_proportional() {
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
     // if it is too high, the robot will oscillate around.
@@ -168,7 +167,7 @@ public class RobotContainer {
   // this works best if your Limelight's mount height and target mount height are different.
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
   double limelight_range_proportional() {
-    double kP = .1;
+    double kP = 0.1;
     double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
     targetingForwardSpeed *= MaxSpeed;
     targetingForwardSpeed *= -1.0;

@@ -21,8 +21,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class VisionSubsystem extends SubsystemBase {
   private final Pigeon2 pidgey;
-  private final SwerveDrivePoseEstimator poseEstimator;
   private final Supplier<SwerveModulePosition[]> modulePositionsSupplier;
+  public final SwerveDrivePoseEstimator poseEstimator;
 
   /**
    * Standard deviations of model states. Increase these numbers to trust your model's state
@@ -66,7 +66,7 @@ public class VisionSubsystem extends SubsystemBase {
     LimelightHelpers.SetRobotOrientation("", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
 
     // Get the pose estimate
-    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
+    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
 
     // If our angular velocity is greater than 360 degrees per second, ignore vision updates
     boolean doRejectUpdate = false;

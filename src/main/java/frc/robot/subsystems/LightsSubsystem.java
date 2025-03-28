@@ -68,7 +68,7 @@ public class LightsSubsystem extends SubsystemBase {
   public LightsSubsystem() {
     leds = new AddressableLED(RobotMap.LED_STRIP);
 
-    buffer = new AddressableLEDBuffer(30);
+    buffer = new AddressableLEDBuffer(60);
 
     leds.setLength(buffer.getLength());
 
