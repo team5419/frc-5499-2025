@@ -6,43 +6,110 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class AlignToReefCommand extends Command {
-  private SwerveDriveSubsystem drivetrain;
   private PIDController xController, yController, rotController;
+  private boolean isRightScore;
   private Timer dontSeeTagTimer, stopTimer;
+  private SwerveDriveSubsystem drivetrain;
   private double tagID = -1;
 
-  public AlignToReefCommand(SwerveDriveSubsystem drivetrain) {
+  // Robot relative drive request
+  private final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+  public AlignToReefCommand(boolean isRightScore, SwerveDriveSubsystem drivetrain) {
+    xController = new PIDController(Constants.X_REEF_ALIGNMENT_P, 0.0, 0);  // Vertical movement
+    yController = new PIDController(Constants.Y_REEF_ALIGNMENT_P, 0.0, 0);  // Horitontal movement
+    rotController = new PIDController(Constants.ROT_REEF_ALIGNMENT_P, 0, 0);  // Rotation
+    this.isRightScore = isRightScore;
     this.drivetrain = drivetrain;
-    // xController
-    // addRequirements(drivetrain);
+    addRequirements(drivetrain);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //use import edu.wpi.first.math.geometry.Translation2d; to get fieldcentric setpoints
+    this.stopTimer = new Timer();
+    this.stopTimer.start();
+    this.dontSeeTagTimer = new Timer();
+    this.dontSeeTagTimer.start();
 
+    rotController.setSetpoint(Constants.ROT_SETPOINT_REEF_ALIGNMENT);
+    rotController.setTolerance(Constants.ROT_TOLERANCE_REEF_ALIGNMENT);
+
+    xController.setSetpoint(Constants.X_SETPOINT_REEF_ALIGNMENT);
+    xController.setTolerance(Constants.X_TOLERANCE_REEF_ALIGNMENT);
+
+    yController.setSetpoint(isRightScore ? Constants.Y_SETPOINT_REEF_ALIGNMENT : -Constants.Y_SETPOINT_REEF_ALIGNMENT);
+    yController.setTolerance(Constants.Y_TOLERANCE_REEF_ALIGNMENT);
+
+    tagID = LimelightHelpers.getFiducialID("");
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (LimelightHelpers.getTV("") && LimelightHelpers.getFiducialID("") == tagID) {
+      this.dontSeeTagTimer.reset();
+
+      double[] postions = LimelightHelpers.getBotPose_TargetSpace("");
+      SmartDashboard.putNumber("x", postions[2]);
+
+      double xSpeed = xController.calculate(postions[2]);
+      SmartDashboard.putNumber("xspee", xSpeed);
+      double ySpeed = -yController.calculate(postions[0]);
+      double rotValue = -rotController.calculate(postions[4]);
+
+      Translation2d translation = new Translation2d(xSpeed, ySpeed);
+
+      drivetrain.applyRequest(() ->
+        drive.withVelocityX(translation.getX())
+          .withVelocityY(translation.getY())
+          .withRotationalRate(rotValue)
+      );
+
+      if (!rotController.atSetpoint() ||
+          !yController.atSetpoint() ||
+          !xController.atSetpoint()) {
+        stopTimer.reset();
+      }
+    } else {
+      Translation2d translation = new Translation2d(0, 0);
+
+      drivetrain.applyRequest(() ->
+        drive.withVelocityX(translation.getX())
+          .withVelocityY(translation.getY())
+          .withRotationalRate(0)
+      );
+    }
+
+    SmartDashboard.putNumber("poseValidTimer", stopTimer.get());
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    Translation2d translation = new Translation2d(0, 0);
+
+    drivetrain.applyRequest(() ->
+      drive.withVelocityX(translation.getX())
+        .withVelocityY(translation.getY())
+        .withRotationalRate(0)
+    );
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag in the camera
+    return this.dontSeeTagTimer.hasElapsed(Constants.DONT_SEE_TAG_WAIT_TIME) ||
+        stopTimer.hasElapsed(Constants.POSE_VALIDATION_TIME);
   }
 }

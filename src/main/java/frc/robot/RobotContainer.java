@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.AlignToReefCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
@@ -124,6 +125,10 @@ public class RobotContainer {
 
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+    // ---------- Reef alignment ----------
+    joystick.povRight().onTrue(new AlignToReefCommand(true, drivetrain).withTimeout(3));
+		joystick.povLeft().onTrue(new AlignToReefCommand(false, drivetrain).withTimeout(3));
 
     // ---------- Slowmode ----------
     joystick.leftStick().onTrue(
