@@ -61,13 +61,13 @@ public class AlignToReefCommand extends Command {
     if (LimelightHelpers.getTV("") && LimelightHelpers.getFiducialID("") == tagID) {
       this.dontSeeTagTimer.reset();
 
-      double[] postions = LimelightHelpers.getBotPose_TargetSpace("");
-      SmartDashboard.putNumber("x", postions[2]);
+      double[] positions = LimelightHelpers.getBotPose_TargetSpace("");
+      SmartDashboard.putNumber("x", positions[2]);
 
-      double xSpeed = xController.calculate(postions[2]);
+      double xSpeed = xController.calculate(positions[2]);
       SmartDashboard.putNumber("xspee", xSpeed);
-      double ySpeed = -yController.calculate(postions[0]);
-      double rotValue = -rotController.calculate(postions[4]);
+      double ySpeed = -yController.calculate(positions[0]);
+      double rotValue = -rotController.calculate(positions[4]);
 
       Translation2d translation = new Translation2d(xSpeed, ySpeed);
 
