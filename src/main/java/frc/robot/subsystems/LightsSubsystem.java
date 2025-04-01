@@ -68,7 +68,7 @@ public class LightsSubsystem extends SubsystemBase {
   public LightsSubsystem() {
     leds = new AddressableLED(RobotMap.LED_STRIP);
 
-    buffer = new AddressableLEDBuffer(30);
+    buffer = new AddressableLEDBuffer(60);
 
     leds.setLength(buffer.getLength());
 
@@ -90,7 +90,6 @@ public class LightsSubsystem extends SubsystemBase {
     LEDPattern pattern = defaultPattern;
 
     isEnabledPrev = DriverStation.isEnabled();
-    System.out.println(DriverStation.isEnabled());
     if (isEnabledPrev != DriverStation.isEnabled()) {
       currentState = DriverStation.isEnabled() ? LightsState.IDLE : LightsState.DISABLED;
     }

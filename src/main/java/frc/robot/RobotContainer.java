@@ -10,7 +10,8 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.geometry.Rotation2d;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,10 +36,10 @@ public class RobotContainer {
 
   // Setting up bindings for necessary control of the swerve drive platform
   private final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.1)
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    new SwerveRequest.FieldCentric()
+      .withDeadband(MaxSpeed * 0.1)
+      .withRotationalDeadband(MaxAngularRate * 0.1)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -59,12 +60,14 @@ public class RobotContainer {
   public RobotContainer() {
     lights = new LightsSubsystem();
 
-    drivetrain = TunerConstants.createDrivetrain();
     elevator = new ElevatorSubsystem(lights);
     disloger = new DislogerSubsystem();
     intake = new IntakeSubsystem();
-    vision = new VisionSubsystem(drivetrain);
-    climb = new ClimbSubsystem(); 
+    climb = new ClimbSubsystem();
+    vision = new VisionSubsystem();
+    drivetrain = TunerConstants.createDrivetrain(vision);
+
+    drivetrain.configAutos();
 
     lights.setState(LightsState.DISABLED);
 
@@ -78,7 +81,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Outtake", intake.setIntakeCommand(-1));
     NamedCommands.registerCommand("Intake Stop", intake.setIntakeCommand(0));
 
-    autoChooser = AutoBuilder.buildAutoChooser("Move Forward Short");
+    autoChooser = AutoBuilder.buildAutoChooser("coral");
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureBindings();
@@ -93,17 +96,6 @@ public class RobotContainer {
         .withRotationalRate(-joystick.getRightX() * MaxAngularRate)
       )
     );
-
-    // ---------- honestly i have no idea what pressing x does while driving ----------
-    // -------- Ms. Buehler --- I am commenting this out because I want to use x for the climber
-    /*
-    joystick.x().whileTrue(drivetrain.applyRequest(() ->
-        point.withModuleDirection(
-          new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX())
-        )
-      )
-    );
-    */
 
     joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
@@ -134,7 +126,7 @@ public class RobotContainer {
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-  
+
     // ---------- Slowmode ----------
     joystick.leftStick().onTrue(
       drivetrain.runOnce(() -> {
@@ -150,7 +142,44 @@ public class RobotContainer {
     );
   }
 
+  // simple proportional turning control with Limelight.
+  // "proportional control" is a control algorithm in which the output is proportional to the error.
+  // in this case, we are going to return an angular velocity that is proportional to the
+  // "tx" value from the Limelight.
+  double limelight_aim_proportional() {
+    // kP (constant of proportionality)
+    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+    // if it is too high, the robot will oscillate around.
+    // if it is too low, the robot will never reach its target
+    // if the robot never turns in the correct direction, kP should be inverted.
+    double kP = .035;
+
+    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of
+    // your limelight 3 feed, tx should return roughly 31 degrees.
+    double targetingAngularVelocity = LimelightHelpers.getTX("") * kP;
+
+    // convert to radians per second for our drive method
+    targetingAngularVelocity *= MaxAngularRate;
+
+    //invert since tx is positive when the target is to the right of the crosshair
+    targetingAngularVelocity *= -1.0;
+
+    return targetingAngularVelocity;
+  }
+
+  // simple proportional ranging control with Limelight's "ty" value
+  // this works best if your Limelight's mount height and target mount height are different.
+  // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
+  double limelight_range_proportional() {
+    double kP = 0.1;
+    double targetingForwardSpeed = LimelightHelpers.getTY("") * kP;
+    targetingForwardSpeed *= MaxSpeed;
+    targetingForwardSpeed *= -1.0;
+    return targetingForwardSpeed;
+  }
+
   public Command getAutonomousCommand() {
+    System.out.println(autoChooser.getSelected().getName());
     return autoChooser.getSelected();
   }
 }

@@ -30,5 +30,5 @@ public class RobotMap {
   // ---------- RoboRIO ports ----------
 
   public static final int LED_STRIP = 7;
-  public static final int BEAM_BREAK = 9;
+  public static final int BEAM_BREAK = 8;
 }
