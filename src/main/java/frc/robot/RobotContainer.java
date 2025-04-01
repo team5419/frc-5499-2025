@@ -18,11 +18,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
 
 public class RobotContainer {
@@ -48,6 +50,7 @@ public class RobotContainer {
   private final LightsSubsystem lights;
   private final IntakeSubsystem intake;
   private final VisionSubsystem vision;
+  private final ClimbSubsystem climb;
 
   private boolean isSlowmode = false;
 
@@ -61,6 +64,7 @@ public class RobotContainer {
     disloger = new DislogerSubsystem();
     intake = new IntakeSubsystem();
     vision = new VisionSubsystem(drivetrain);
+    climb = new ClimbSubsystem(); 
 
     lights.setState(LightsState.DISABLED);
 
