@@ -238,12 +238,12 @@ public class SwerveDriveSubsystem extends TunerSwerveDrivetrain implements Subsy
     PoseEstimate limelightMeasurement = visionSubsystem.updateLimelight(pidgey);
 
     // If our angular velocity is greater than 360 degrees per second, ignore vision updates
-    boolean doRejectUpdate = false;
+    boolean doRejectUpdate = true;
     // if (Math.abs(pidgey.getAngularVelocityXDevice().getValueAsDouble()) > 360) {
     //   doRejectUpdate = true;
     // }
-    if (limelightMeasurement.tagCount == 0) {
-      doRejectUpdate = true;
+    if (limelightMeasurement != null && limelightMeasurement.tagCount == 0) {
+      doRejectUpdate = false;
     }
 
 

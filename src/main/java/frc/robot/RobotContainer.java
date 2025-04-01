@@ -119,9 +119,10 @@ public class RobotContainer {
     joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
 
     // ---------- Climber ----------
-    joystick.x().onTrue(climb.setClimberCommand(.1));
+    joystick.x().onTrue(climb.setClimberCommand(.5));
     joystick.x().onFalse(climb.setClimberCommand(0));
-    joystick.povDown().onTrue(climb.setClimberCommand(-.1));
+    joystick.povDown().onTrue(climb.setClimberCommand(-.5));
+    joystick.povDown().onFalse(climb.setClimberCommand(0));
 
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
