@@ -8,6 +8,7 @@ import java.util.Map;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
@@ -15,13 +16,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class LightsSubsystem extends SubsystemBase {
-  private final AddressableLED leds_left;
-  // private final AddressableLED leds_right;
-  private AddressableLEDBuffer left_buffer;
-  // private AddressableLEDBuffer right_buffer;
+  private final AddressableLED leds;
+  private AddressableLEDBuffer buffer;
 
-  // // Our LED strip has a density of 30 LEDs per meter
+  // Our LED strip has a density of 30 LEDs per meter
   private static final Distance ledSpacing = Meters.of(1 / 30.0);
+
+  private boolean isEnabledPrev = false;
 
   // ---------- LED Patterns ----------
   // Default pattern
@@ -33,52 +34,47 @@ public class LightsSubsystem extends SubsystemBase {
   // Disabled gradient
   private final LEDPattern disabledPattern = LEDPattern.gradient(
     GradientType.kContinuous,
-    Color.fromHSV(23, 100, 0),
-    Color.fromHSV(48, 100, 0)
+    Color.kRed,
+    Color.kOrange
   );
 
   // L1 pattern
   private final LEDPattern l1Pattern = LEDPattern.steps(Map.of(
-    0, Color.fromHSV(23, 100, 100),
-    0.33, Color.fromHSV(0, 0, 100),
-    0.66, Color.fromHSV(0, 0, 100)
+    0, Color.kRed,
+    0.33, Color.kOrange,
+    0.66, Color.kOrange
   ));
 
   // L2 pattern
   private final LEDPattern l2Pattern = LEDPattern.steps(Map.of(
-    0, Color.fromHSV(0, 0, 100),
-    0.33, Color.fromHSV(32, 100, 100),
-    0.66, Color.fromHSV(0, 0, 100)
+    0, Color.kOrange,
+    0.33, Color.kRed,
+    0.66, Color.kOrange
   ));
 
   // L3 pattern
   private final LEDPattern l3Pattern = LEDPattern.steps(Map.of(
-    0, Color.fromHSV(0, 0, 100),
-    0.33, Color.fromHSV(0, 0, 100),
-    0.66, Color.fromHSV(48, 100, 100)
+    0, Color.kOrange,
+    0.33, Color.kOrange,
+    0.66, Color.kRed
   ));
 
   public static enum LightsState {
     DISABLED, IDLE, INTAKE, CLIMBING, L1, L2, L3,
   }
 
-  private LightsState currentState = LightsState.IDLE;
+  private LightsState currentState = LightsState.DISABLED;
 
   public LightsSubsystem() {
-    leds_left = new AddressableLED(RobotMap.LED_LEFT);
-    // leds_right = new AddressableLED(RobotMap.LED_RIGHT);
+    leds = new AddressableLED(RobotMap.LED_STRIP);
 
-    left_buffer = new AddressableLEDBuffer(30);
-    // right_buffer = new AddressableLEDBuffer(30);
+    buffer = new AddressableLEDBuffer(30);
 
-    leds_left.setLength(left_buffer.getLength());
-    // leds_right.setLength(right_buffer.getLength());
+    leds.setLength(buffer.getLength());
 
-    leds_left.setData(left_buffer);
-    // leds_right.setData(right_buffer);
+    leds.setData(buffer);
 
-    leds_left.start();
-    // leds_right.start();
+    leds.start();
   }
 
   public void setState(LightsState state) {
@@ -91,20 +87,34 @@ public class LightsSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    LEDPattern currentPattern = defaultPattern;
-    switch (currentState) {
-      case DISABLED: currentPattern = getScrollPattern(disabledPattern);
-      case IDLE: currentPattern = getScrollPattern(rainbowPattern);
-      case L1: currentPattern = l1Pattern;
-      case L2: currentPattern = l2Pattern;
-      case L3: currentPattern = l3Pattern;
-      default: currentPattern = defaultPattern;
+    LEDPattern pattern = defaultPattern;
+
+    isEnabledPrev = DriverStation.isEnabled();
+    System.out.println(DriverStation.isEnabled());
+    if (isEnabledPrev != DriverStation.isEnabled()) {
+      currentState = DriverStation.isEnabled() ? LightsState.IDLE : LightsState.DISABLED;
     }
 
-    currentPattern.applyTo(left_buffer);
-    // scrollingRainbowPattern.applyTo(right_buffer);
+    switch (currentState) {
+      case DISABLED:
+        pattern = getScrollPattern(disabledPattern);
+        break;
+      case L1:
+        pattern = l1Pattern;
+        break;
+      case L2:
+        pattern = l2Pattern;
+        break;
+      case L3:
+        pattern = l3Pattern;
+        break;
+      default:
+        pattern = getScrollPattern(rainbowPattern);
+        break;
+    }
 
-    leds_left.setData(left_buffer);
-    // leds_right.setData(right_buffer);
+    pattern.applyTo(buffer);
+
+    leds.setData(buffer);
   }
 }

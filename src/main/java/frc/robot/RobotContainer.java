@@ -23,6 +23,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.LightsSubsystem.LightsState;
 
 public class RobotContainer {
   // kSpeedAt12Volts desired top speed
@@ -60,6 +61,8 @@ public class RobotContainer {
     disloger = new DislogerSubsystem();
     intake = new IntakeSubsystem();
     vision = new VisionSubsystem(drivetrain);
+
+    lights.setState(LightsState.DISABLED);
 
     NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
     NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
