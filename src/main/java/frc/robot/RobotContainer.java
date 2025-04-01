@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -49,6 +50,7 @@ public class RobotContainer {
   private final LightsSubsystem lights;
   private final IntakeSubsystem intake;
   private final VisionSubsystem vision;
+  private final ClimbSubsystem climb;
 
   private boolean isSlowmode = false;
 
@@ -61,6 +63,7 @@ public class RobotContainer {
     disloger = new DislogerSubsystem();
     intake = new IntakeSubsystem();
     vision = new VisionSubsystem();
+    climb = new ClimbSubsystem();
     drivetrain = TunerConstants.createDrivetrain(vision);
 
     drivetrain.configAutos();
@@ -121,6 +124,12 @@ public class RobotContainer {
     joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
     joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
     joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
+
+    // ---------- Climb ----------
+    joystick.povUp().onTrue(climb.setClimberCommand(1));
+    joystick.povDown().onTrue(climb.setClimberCommand(-1));
+    joystick.povUp().onFalse(climb.setClimberCommand(0));
+    joystick.povDown().onFalse(climb.setClimberCommand(0));
 
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
