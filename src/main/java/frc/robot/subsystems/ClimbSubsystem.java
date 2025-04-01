@@ -24,7 +24,7 @@ public class ClimbSubsystem extends SubsystemBase {
 // Leo, make it so that when I press X, the motor spins backwards pleasel 
 // - this gets done in robot container, NOT here
 
-// Everybot says that we need to have a climber forward and a climber backwards so maybe D pad
+// Everybot says that we need to have a climber forward and a climber backwards so maybe D pad -- this will be in robot container NOT here
   @Override
   public void periodic() {
     Logger.recordOutput("Climb Motor Set Speed", climber.get());

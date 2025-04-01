@@ -95,12 +95,15 @@ public class RobotContainer {
     );
 
     // ---------- honestly i have no idea what pressing x does while driving ----------
+    // -------- Ms. Buehler --- I am commenting this out because I want to use x for the climber
+    /*
     joystick.x().whileTrue(drivetrain.applyRequest(() ->
         point.withModuleDirection(
           new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX())
         )
       )
     );
+    */
 
     joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
@@ -123,9 +126,15 @@ public class RobotContainer {
     joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
     joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
 
+    // ---------- Climber ----------
+    joystick.x().onTrue(climb.setClimberCommand(.1));
+    joystick.x().onFalse(climb.setClimberCommand(0));
+    joystick.povDown().onTrue(climb.setClimberCommand(-.1));
+
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+  
     // ---------- Slowmode ----------
     joystick.leftStick().onTrue(
       drivetrain.runOnce(() -> {
