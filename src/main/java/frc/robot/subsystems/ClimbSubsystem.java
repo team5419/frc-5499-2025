@@ -37,10 +37,10 @@ public class ClimbSubsystem extends SubsystemBase {
   private final RelativeEncoder climbEncoder = climber.getEncoder();
   
   private ClimbGoal goal = ClimbGoal.STOW;
-
+// Negative numbers go forward, Positive numbers go back
   public enum ClimbGoal {
-    STOW(0.0),
-    CLIMB(440.0);
+    CLIMB(0.0),
+    STOW(-370.0);
 
     private double goal;
     private ClimbGoal(double goal){
