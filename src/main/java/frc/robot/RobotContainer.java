@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -25,6 +26,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.ClimbSubsystem.ClimbGoal;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
 
 public class RobotContainer {
@@ -63,8 +65,8 @@ public class RobotContainer {
     disloger = new DislogerSubsystem();
     intake = new IntakeSubsystem();
     vision = new VisionSubsystem();
-    climb = new ClimbSubsystem();
     drivetrain = TunerConstants.createDrivetrain(vision);
+    climb = new ClimbSubsystem();
 
     drivetrain.configAutos();
 
@@ -124,13 +126,11 @@ public class RobotContainer {
     joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
     joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
     joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
-
-    // ---------- Climb ----------
-    joystick.povUp().onTrue(climb.setClimberCommand(1));
-    joystick.povDown().onTrue(climb.setClimberCommand(-1));
-    joystick.povUp().onFalse(climb.setClimberCommand(0));
-    joystick.povDown().onFalse(climb.setClimberCommand(0));
-
+  // ---------- Climb ----------
+  joystick.povUp().onTrue(climb.setClimbCommand(ClimbGoal.CLIMB));
+  joystick.povDown().onTrue(climb.setClimbCommand(ClimbGoal.STOW));
+     
+    
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
