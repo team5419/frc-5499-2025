@@ -26,7 +26,6 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.ClimbSubsystem.ClimbGoal;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
 
 public class RobotContainer {
@@ -126,9 +125,12 @@ public class RobotContainer {
     joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
     joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
     joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
+
   // ---------- Climb ----------
-  joystick.povUp().onTrue(climb.setClimbCommand(ClimbGoal.CLIMB));
-  joystick.povDown().onTrue(climb.setClimbCommand(ClimbGoal.STOW));
+    joystick.povUp().onTrue(climb.setClimberCommand(2));
+    joystick.povDown().onTrue(climb.setClimberCommand(-2));
+    joystick.povUp().onFalse(climb.setClimberCommand(0));
+    joystick.povDown().onFalse(climb.setClimberCommand(0));
      
     
     // ---------- Reset heading ----------
