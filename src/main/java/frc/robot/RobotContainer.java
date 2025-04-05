@@ -142,10 +142,10 @@ public class RobotContainer {
         isSlowmode = !isSlowmode;
         if (isSlowmode) {
           MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 4;
-          MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) / 2;
+          MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond) / 2;
         } else {
           MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-          MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
+          MaxAngularRate = RotationsPerSecond.of(1).in(RadiansPerSecond);
         }
       })
     );
