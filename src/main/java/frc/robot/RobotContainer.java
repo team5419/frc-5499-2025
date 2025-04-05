@@ -32,7 +32,7 @@ public class RobotContainer {
   // kSpeedAt12Volts desired top speed
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
   // 3/4 of a rotation per second max angular velocity
-  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+  private double MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
 
   // Setting up bindings for necessary control of the swerve drive platform
   private final SwerveRequest.FieldCentric drive =
@@ -145,7 +145,7 @@ public class RobotContainer {
           MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond) / 2;
         } else {
           MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-          MaxAngularRate = RotationsPerSecond.of(1).in(RadiansPerSecond);
+          MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
         }
       })
     );
