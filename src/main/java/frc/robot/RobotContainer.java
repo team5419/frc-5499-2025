@@ -10,9 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -74,6 +72,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
     NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
     NamedCommands.registerCommand("Elevator L3", elevator.setElevateCommand(2));
+    NamedCommands.registerCommand("Elevator Algae Disloge", elevator.setElevateCommand(3));
     NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
     NamedCommands.registerCommand("Disloger Stop", disloger.getDislogeCommand(0));
     NamedCommands.registerCommand("Disloger Reverse", disloger.getDislogeCommand(-1));
@@ -126,13 +125,13 @@ public class RobotContainer {
     joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
     joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
 
-  // ---------- Climb ----------
+    // ---------- Climb ----------
     joystick.povUp().onTrue(climb.setClimberCommand(2));
     joystick.povDown().onTrue(climb.setClimberCommand(-2));
     joystick.povUp().onFalse(climb.setClimberCommand(0));
     joystick.povDown().onFalse(climb.setClimberCommand(0));
-     
-    
+
+
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

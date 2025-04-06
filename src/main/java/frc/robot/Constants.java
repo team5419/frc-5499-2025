@@ -35,8 +35,8 @@ public final class Constants {
     REPLAY
   }
 
-  public static final double[] elevatorPositions = /*{0, 95, 134}*/{0, 3.5, 14.6};
+  public static final double[] elevatorPositions = /*{0, 95, 134}*/{0, 3.5, 14.6, 2.7};
   public static final double elevatorConversion = /*0.0368421053*/1;
-  
+
   public static final double maxAngularRate = 0.9;
 }

@@ -68,7 +68,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     return this.runOnce(() -> {
       this.currentPosition = Math.min(this.currentPosition + positionChange, 2);
       updateElevator();
-
     });
   }
 
