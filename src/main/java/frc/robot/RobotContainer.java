@@ -39,6 +39,8 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+  public final joystick.leftBumper.back (). whileTrue(S)
+
   public RobotContainer() {
     configureBindings();
   }
@@ -85,4 +87,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
+
 }
