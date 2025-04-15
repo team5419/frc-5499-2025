@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
+import frc.robot.subsystems.IntakeSubsystem;
+
 public class RobotContainer {
   private double MaxSpeed =
       TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -39,8 +41,11 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+  private final IntakeSubsystem intake;
+
   public RobotContainer() {
     configureBindings();
+    intake = new IntakeSubsystem();
   }
 
   private void configureBindings() {
@@ -80,6 +85,9 @@ public class RobotContainer {
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
+
+    joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.1)); // Set the intake to run at full speed when right trigger is pressed
+    joystick.rightTrigger().onFalse(intake.setIntakeCommand(0.0)); // Stop the intake when the trigger is released
   }
 
   public Command getAutonomousCommand() {
