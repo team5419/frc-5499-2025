@@ -18,5 +18,9 @@ public class RobotMap {
     public static final int BACK_RIGHT_DRIVE = 42;
 
     public static final int PIGEON = 50;
+    //----------------SparkMax----------------//
+    public static final int INTAKE = 04;
+
 
 }
+
