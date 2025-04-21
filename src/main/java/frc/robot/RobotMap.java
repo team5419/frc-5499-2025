@@ -1,7 +1,11 @@
 package frc.robot;
 
 public class RobotMap {
+
   // Drivetrain
+
+  // ---------- Drivetrain ----------
+
   public static final int FRONT_LEFT_ENCODER = 10;
   public static final int FRONT_LEFT_STEER = 11;
   public static final int FRONT_LEFT_DRIVE = 12;
