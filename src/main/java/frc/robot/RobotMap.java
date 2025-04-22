@@ -25,5 +25,10 @@ public class RobotMap {
   public static final int PIGEON = 50;
 
   // SparkMAX(intake)
-  public static final int INTAKE = 99;
+  public static final int INTAKE = 20;
+  public static final int CLIMB = 4;
+  public static final int DISLODGER = 30;
+  public static final int ELEVATOR_LEFT = 10;
+  public static final int ELEVATOR_RIGHT = 11;
+
 }
