@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot;
 
 public class RobotMap {
     public static final int FRONT_LEFT_ENCODER = 10;
@@ -19,5 +19,5 @@ public class RobotMap {
 
     public static final int PIDGEON = 50;
 
-    public static final int INTAKE = 99;
+    public static final int INTAKE = 20;
 }
