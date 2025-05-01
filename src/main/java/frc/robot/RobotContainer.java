@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class RobotContainer {
@@ -44,8 +43,8 @@ public class RobotContainer {
   private final IntakeSubsystem intake;
 
   public RobotContainer() {
-    configureBindings();
     intake = new IntakeSubsystem();
+    configureBindings();
   }
 
   private void configureBindings() {
@@ -86,8 +85,14 @@ public class RobotContainer {
 
     // drivetrain.registerTelemetry(logger::telemeterize);
 
-    joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.1)); // Set the intake to run at full speed when right trigger is pressed
-    joystick.rightTrigger().onFalse(intake.setIntakeCommand(0.0)); // Stop the intake when the trigger is released
+    joystick
+        .rightTrigger()
+        .onTrue(
+            intake.setIntakeCommand(
+                0.1)); // Set the intake to run at full speed when right trigger is pressed
+    joystick
+        .rightTrigger()
+        .onFalse(intake.setIntakeCommand(0.0)); // Stop the intake when the trigger is released
   }
 
   public Command getAutonomousCommand() {
