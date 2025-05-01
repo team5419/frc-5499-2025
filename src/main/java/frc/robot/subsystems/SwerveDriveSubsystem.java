@@ -242,9 +242,10 @@ public class SwerveDriveSubsystem extends TunerSwerveDrivetrain implements Subsy
     // if (Math.abs(pidgey.getAngularVelocityXDevice().getValueAsDouble()) > 360) {
     //   doRejectUpdate = true;
     // }
-    if (limelightMeasurement.tagCount == 0) {
+    // this if statmaent 
+    if (limelightMeasurement == null ||  limelightMeasurement.tagCount == 0)
       doRejectUpdate = true;
-    }
+    
 
 
     if (!doRejectUpdate) {
