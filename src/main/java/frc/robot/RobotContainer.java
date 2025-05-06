@@ -23,7 +23,6 @@ public class RobotContainer {
     private final Intake intake = new Intake();
 
     private final Climb climb = new Climb();
-    }
 
   private double MaxSpeed =
       TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -92,6 +91,11 @@ public class RobotContainer {
     // Xbox controll triggers
 joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.1));
 joystick.rightTrigger().onFalse(intake.setIntakeCommand(0.0));
+
+//Xbox controlls for climb 
+//Need to confirm that bumpers should control climb
+joystick.leftBumper().onTrue(climb.setClimbCommand(-0.1));
+joystick.rightBumper().onTrue(climb.setClimbCommand(0.1));
 
 
     // drivetrain.registerTelemetry(logger::telemeterize);

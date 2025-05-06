@@ -4,6 +4,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotMap;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Climb {
@@ -12,11 +14,11 @@ public class Climb {
     }
  
     public Command setClimbCommand (double direction){
-        return Commands.runOnce(()-> intake.get());
+        return Commands.runOnce(()-> climb.set(direction));
     }
     @Override
-    public void periodic () {
-        Logger.recordOutput(key:"Intake Motor Output", intake.get()); 
+   public void.periodic() {
+        Logger.recordOutput("Intake Motor Output", climb.get()); 
     }
 }
 
