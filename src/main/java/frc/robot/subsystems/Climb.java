@@ -10,7 +10,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Climb {
     public class ClimbSubsystem extends SubsystemBase{
-    private final SparkMax intake = new SparkMax (RobotMap.CLIMB, MotorType.kBrushless);
+        private final SparkMax intake = new SparkMax (RobotMap.CLIMB, MotorType.kBrushless);
     }
  
     public Command setClimbCommand (double direction){
