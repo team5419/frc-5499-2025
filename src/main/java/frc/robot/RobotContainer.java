@@ -4,11 +4,7 @@
 package frc.robot;
 
 
-
-
-
 import static edu.wpi.first.units.Units.*;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,13 +14,17 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.IntakeSubsystem;import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class RobotContainer {
-    private final IntakeSubsystem intake;
+    
+    private final CommandXboxController joystick = new CommandXboxController(0);
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    private final IntakeSubsystem intake = new IntakeSubsystem();
+
+
     public RobotContainer() {
         configureBindings();
-        intake = new IntakeSubsystem();
     }
 
  
@@ -48,14 +48,9 @@ public class RobotContainer {
 
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  
+  
 
-  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-private final IntakeSubsystem intake;
-  public RobotContainer() {
-    configureBindings();
-     intake = new IntakeSubsystem();
-  }
 
   private void configureBindings() {
     // Note that X is defined as forward according to WPILib convention,
@@ -102,6 +97,4 @@ private final IntakeSubsystem intake;
 public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
-  joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.1));
-  joystick.rightTrigger().onFalse(intake.setIntakeCommand(0.0));
 }
