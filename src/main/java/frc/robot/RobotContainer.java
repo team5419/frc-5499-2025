@@ -1,8 +1,11 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
+
+
+
+
 
 import static edu.wpi.first.units.Units.*;
 
@@ -15,13 +18,23 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;import frc.robot.subsystems.IntakeSubsystem;
+
 public class RobotContainer {
+    private final IntakeSubsystem intake;
+    public RobotContainer() {
+        configureBindings();
+        intake = new IntakeSubsystem();
+    }
+
+ 
   private double MaxSpeed =
       TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate =
       RotationsPerSecond.of(0.75)
           .in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+
+
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final SwerveRequest.FieldCentric drive =
@@ -89,4 +102,6 @@ private final IntakeSubsystem intake;
 public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
+  joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.1));
+  joystick.rightTrigger().onFalse(intake.setIntakeCommand(0.0));
 }
