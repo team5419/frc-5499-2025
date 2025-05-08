@@ -30,5 +30,4 @@ public class RobotMap {
   public static final int DISLODGER = 30;
   public static final int ELEVATOR_LEFT = 10;
   public static final int ELEVATOR_RIGHT = 11;
-
 }

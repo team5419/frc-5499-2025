@@ -41,8 +41,8 @@ public class RobotContainer {
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
   public RobotContainer() {
-    configureBindings();
     intake = new IntakeSubsystem();
+    configureBindings();
   }
 
   private final IntakeSubsystem intake;
