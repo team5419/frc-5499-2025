@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-
+import frc.robot.subsystems.IntakeSubsystem;
 public class RobotContainer {
   private double MaxSpeed =
       TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -38,9 +38,10 @@ public class RobotContainer {
   private final CommandXboxController joystick = new CommandXboxController(0);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
+private final IntakeSubsystem intake;
   public RobotContainer() {
     configureBindings();
+     intake = new IntakeSubsystem();
   }
 
   private void configureBindings() {
@@ -78,11 +79,14 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
+    joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.1));
+    joystick.rightTrigger().onFalse(intake.setIntakeCommand(0.0));  
     // drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  public Command getAutonomousCommand() {
+
+
+public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
 }
