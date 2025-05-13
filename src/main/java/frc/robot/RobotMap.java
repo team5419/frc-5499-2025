@@ -21,5 +21,14 @@ public class RobotMap {
   public static final int PIGEON = 50;
 
   // --------SparkMAX----------//
-  public static final int INTAKE = 4;
+  public static final int INTAKE = 30;
+
+  //--------Climb---------//
+  public static final int CLIMB = 4;
+
+  public static final int ELEVATOR_LEFT = 11;
+
+  public static final int ELEVATOR_RIGHT = 10;
+
+  public static final int ALGAE = 20;
 }
