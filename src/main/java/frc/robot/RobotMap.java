@@ -23,7 +23,7 @@ public class RobotMap {
   // --------SparkMAX----------//
   public static final int INTAKE = 30;
 
-  //--------Climb---------//
+  // --------Climb---------//
   public static final int CLIMB = 4;
 
   public static final int ELEVATOR_LEFT = 11;
