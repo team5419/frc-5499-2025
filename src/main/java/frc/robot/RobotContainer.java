@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -38,6 +39,8 @@ public class RobotContainer {
   private final CommandXboxController joystick = new CommandXboxController(0);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+private final IntakeSubsystem intake = new IntakeSubsystem();
 
   public RobotContainer() {
     configureBindings();
@@ -78,7 +81,10 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
+    joystick.leftTrigger().onTrue(intake.setIntakeCommand(0.1));
+    joystick.leftTrigger().onFalse(intake.setIntakeCommand(0.0));
+    joystick.rightTrigger().onTrue(intake.setIntakeCommand(0.1));
+    joystick.rightTrigger().onFalse(intake.setIntakeCommand(0.0));
     // drivetrain.registerTelemetry(logger::telemeterize);
   }
 

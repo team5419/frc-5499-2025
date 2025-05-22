@@ -15,4 +15,10 @@ public class IntakeSubsystem extends SubsystemBase{
     public Command setIntakeCommand(double direction){
         return Commands.runOnce(()-> intake.set(direction));
     }
+
+
+@Override
+public void periodic() {
+    Logger.recordOutput("Intake Motor Output", intake.get());
+}
 }
