@@ -7,13 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Front"
+            "pathName": "Side"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Elevator L2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.8
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disloger Stop"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disloger Stop"
           }
         },
         {
