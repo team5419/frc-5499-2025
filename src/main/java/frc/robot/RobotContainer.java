@@ -103,32 +103,45 @@ public class RobotContainer {
     joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // ---------- Intake ----------
-    joystick.rightTrigger().onTrue(intake.setIntakeCommand(1.0));
-    joystick.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
-    joystick.rightTrigger().onFalse(intake.setIntakeCommand(0));
-    joystick.leftTrigger().onFalse(intake.setIntakeCommand(0));
+
+    // right trigger should be intake/outtake
+    // left trigger should be readjust
+
+    // readjust
+    joystick.rightTrigger().onTrue(intake.setIntakeCommand(1.0)).onFalse(intake.setIntakeCommand(0));
+    
+    // intake/outtake
+    joystick.leftTrigger().onTrue(intake.setIntakeCommand(-0.5)).onFalse(intake.setIntakeCommand(0));
 
     // ---------- Elevator ----------
+
+    // ele up one level (max L3)
     joystick.y().onTrue(elevator.changeElevateCommand(1));
+
+    // ele down (reset to L1)
     joystick.a().onTrue(elevator.setElevateCommand(0));
 
     // ---------- Disloger ----------
-    joystick.leftBumper().onTrue(disloger.getDislogeCommand(1));
-    joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
-    joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
-    joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
+    // runs dislodger out to dislodge (move to something else)
+    joystick.leftBumper().onTrue(disloger.getDislogeCommand(1)).onFalse(disloger.getDislogeCommand(0));
+
+    // runs dislodger in (not useful AT ALL)
+    joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1)).onFalse(disloger.getDislogeCommand(0));
 
     // ---------- Climber ----------
-    joystick.x().onTrue(climb.setClimberCommand(.5));
-    joystick.x().onFalse(climb.setClimberCommand(0));
-    joystick.povDown().onTrue(climb.setClimberCommand(-.5));
-    joystick.povDown().onFalse(climb.setClimberCommand(0));
+
+    // unclimb
+    joystick.x().onTrue(climb.setClimberCommand(.5)).onFalse(climb.setClimberCommand(0));
+
+    // climb in
+    joystick.povDown().onTrue(climb.setClimberCommand(-.5)).onFalse(climb.setClimberCommand(0));
 
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
 
     // ---------- Slowmode ----------
+    // need to change to left bumper
     joystick.leftStick().onTrue(
       drivetrain.runOnce(() -> {
         isSlowmode = !isSlowmode;
