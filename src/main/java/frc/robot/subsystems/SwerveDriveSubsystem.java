@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.pathfinding.Pathfinder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.VecBuilder;
@@ -128,7 +129,11 @@ public class SwerveDriveSubsystem extends TunerSwerveDrivetrain implements Subsy
     // Logging callback for target robot pose
     PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
       // Do whatever you want with the pose here
-      Logger.recordOutput("Pathplanner Target Pose", pose);
+      Logger.recordOutput("Odometry/Target Pose", pose);
+    });
+
+    PathPlannerLogging.setLogActivePathCallback((activePath) -> {
+      Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
     });
 
     poseEstimator = new SwerveDrivePoseEstimator(
@@ -238,14 +243,13 @@ public class SwerveDriveSubsystem extends TunerSwerveDrivetrain implements Subsy
     PoseEstimate limelightMeasurement = visionSubsystem.updateLimelight(pidgey);
 
     // If our angular velocity is greater than 360 degrees per second, ignore vision updates
-    boolean doRejectUpdate = false;
+    boolean doRejectUpdate = true;
     // if (Math.abs(pidgey.getAngularVelocityXDevice().getValueAsDouble()) > 360) {
     //   doRejectUpdate = true;
     // }
-    // this if statmaent 
-    if (limelightMeasurement == null ||  limelightMeasurement.tagCount == 0)
-      doRejectUpdate = true;
-    
+    if (limelightMeasurement != null && limelightMeasurement.tagCount == 0) {
+      doRejectUpdate = false;
+    }
 
 
     if (!doRejectUpdate) {

@@ -17,13 +17,12 @@ public class VisionSubsystem extends SubsystemBase {
     // Get the pose estimate
     PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
 
-    if(limelightMeasurement != null){
+    if(limelightMeasurement == null) return null;
 
     Logger.recordOutput("Vision Subsystem/Limelight Pose", limelightMeasurement.pose);
     Logger.recordOutput("Vision Subsystem/TX", LimelightHelpers.getTX(""));
     Logger.recordOutput("Vision Subsystem/TY", LimelightHelpers.getTY(""));
     Logger.recordOutput("Vision Subsystem/Tag Count", limelightMeasurement.tagCount);
-    }
 
     return limelightMeasurement;
   }

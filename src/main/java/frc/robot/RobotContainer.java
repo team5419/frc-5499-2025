@@ -10,9 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +24,6 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.ClimbSubsystem.ClimbGoal;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
 
 public class RobotContainer {
@@ -64,9 +61,9 @@ public class RobotContainer {
     elevator = new ElevatorSubsystem(lights);
     disloger = new DislogerSubsystem();
     intake = new IntakeSubsystem();
+    climb = new ClimbSubsystem();
     vision = new VisionSubsystem();
     drivetrain = TunerConstants.createDrivetrain(vision);
-    climb = new ClimbSubsystem();
 
     drivetrain.configAutos();
 
@@ -98,14 +95,6 @@ public class RobotContainer {
       )
     );
 
-    // // ---------- honestly i have no idea what pressing x does while driving ----------
-    // joystick.x().whileTrue(drivetrain.applyRequest(() ->
-    //     point.withModuleDirection(
-    //       new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX())
-    //     )
-    //   )
-    // );
-
     joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
     joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
@@ -126,13 +115,16 @@ public class RobotContainer {
     joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
     joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
     joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
-  // ---------- Climb ----------
-  joystick.povUp().onTrue(climb.setClimbCommand(ClimbGoal.CLIMB));
-  joystick.povDown().onTrue(climb.setClimbCommand(ClimbGoal.STOW));
-     
-    
+
+    // ---------- Climber ----------
+    joystick.x().onTrue(climb.setClimberCommand(.5));
+    joystick.x().onFalse(climb.setClimberCommand(0));
+    joystick.povDown().onTrue(climb.setClimberCommand(-.5));
+    joystick.povDown().onFalse(climb.setClimberCommand(0));
+
     // ---------- Reset heading ----------
     joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
 
     // ---------- Slowmode ----------
     joystick.leftStick().onTrue(
