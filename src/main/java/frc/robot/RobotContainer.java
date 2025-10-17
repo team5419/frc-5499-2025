@@ -4,31 +4,36 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
+import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOPhoton;
 
 public class RobotContainer {
+      
+  AprilTagVision aprilTagVision;
+
   // kSpeedAt12Volts desired top speed
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
   // 3/4 of a rotation per second max angular velocity
@@ -52,8 +57,9 @@ public class RobotContainer {
   private final IntakeSubsystem intake;
   private final VisionSubsystem vision;
   private final ClimbSubsystem climb;
-
+  private boolean aligning = false;
   private boolean isSlowmode = false;
+  private boolean connected = false;
 
   private final SendableChooser<Command> autoChooser;
 
@@ -66,6 +72,7 @@ public class RobotContainer {
     climb = new ClimbSubsystem();
     vision = new VisionSubsystem();
     drivetrain = TunerConstants.createDrivetrain(vision);
+    aprilTagVision = new AprilTagVision(this, new AprilTagVisionIOPhoton());
 
     drivetrain.configAutos();
 
@@ -86,7 +93,15 @@ public class RobotContainer {
 
     configureBindings();
   }
-
+  public SwerveDriveSubsystem getSwerve(){
+    return drivetrain;
+  }
+  public boolean isAligning(){
+    return aligning;
+  }
+  public void setVisionConnected(boolean value){
+    connected = value;
+  }
   private void configureBindings() {
     // ---------- Driving ----------
     drivetrain.setDefaultCommand(drivetrain.applyRequest(() ->
