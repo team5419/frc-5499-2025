@@ -14,9 +14,30 @@ public class AprilTagVisionConstants {
     public static final String BACK_CAMERA_NAME = "OV9782_3";
 
     // RADIUM ROTATIONS/TRANSFORMS
-    public static final Rotation3d[] kCameraRotations = null;
+    public static final Rotation3d[] kCameraRotations = new Rotation3d[] {
+        new Rotation3d(0, 0, Units.degreesToRadians(-20)),
+        new Rotation3d(0, 0, Units.degreesToRadians(20)),
+        new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(180))
+    };;
 
-    public static final Transform3d[] kCameraTransform = null;
+    public static final Transform3d[] kCameraTransform = new Transform3d[] {
+        new Transform3d(
+                Units.inchesToMeters(7),
+                Units.inchesToMeters(12 + 0.165 + 0.1654),
+                Units.inchesToMeters(11.5 - 0.472 - 0.472),
+                kCameraRotations[0]),
+        new Transform3d(
+                Units.inchesToMeters(7),
+                Units.inchesToMeters(-12 - 0.165 - 0.1654),
+                Units.inchesToMeters(11.5 - 0.472 - 0.472),
+                kCameraRotations[1]),
+        new Transform3d(
+                Units.inchesToMeters(-11.216),
+                Units.inchesToMeters(-10.278),
+                Units.inchesToMeters(8),
+                kCameraRotations[2])
+    };
+;
 
     public static final double kAmbiguityRejectionLimit = 0.25;
     public static final double kDistanceRejectionLimit = 3;
