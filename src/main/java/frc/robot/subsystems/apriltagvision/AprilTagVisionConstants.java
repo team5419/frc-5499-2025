@@ -2,7 +2,6 @@ package frc.robot.subsystems.apriltagvision;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.util.Units;
 
 public class AprilTagVisionConstants {
     public static final boolean kUsingVision = true;

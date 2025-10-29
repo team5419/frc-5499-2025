@@ -8,14 +8,14 @@ import frc.robot.RobotMap;
 import org.littletonrobotics.junction.Logger;
 
 public class DislogerSubsystem extends SubsystemBase {
-  private final SparkMax motor = new SparkMax(RobotMap.DISLOGER, MotorType.kBrushless);
+    private final SparkMax motor = new SparkMax(RobotMap.DISLOGER, MotorType.kBrushless);
 
-  public Command getDislogeCommand(int direction) {
-    return this.runOnce(() -> motor.set(direction));
-  }
+    public Command getDislogeCommand(int direction) {
+        return this.runOnce(() -> motor.set(direction));
+    }
 
-  @Override
-  public void periodic() {
-    Logger.recordOutput("Disloger Subsystem/Disloger Motor Output", motor.get());
-  }
+    @Override
+    public void periodic() {
+        Logger.recordOutput("Disloger Subsystem/Disloger Motor Output", motor.get());
+    }
 }

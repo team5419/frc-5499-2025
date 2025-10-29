@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -50,9 +49,11 @@ public class VisionUpdate implements LoggableInputs {
         this.targetsUsed = new ArrayList<>();
         this.strategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
     }
-    public Pose3d getEstimatedPose(){
+
+    public Pose3d getEstimatedPose() {
         return estimatedPose;
     }
+
     @Override
     public void toLog(LogTable table) {
         table.put("Camera Name", cameraName);

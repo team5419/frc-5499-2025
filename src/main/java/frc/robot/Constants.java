@@ -21,20 +21,20 @@ import edu.wpi.first.wpilibj.RobotBase;
  * (log replay from a file).
  */
 public final class Constants {
-  public static final Mode simMode = Mode.SIM;
-  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+    public static final Mode simMode = Mode.SIM;
+    public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-  public static enum Mode {
-    /** Running on a real robot. */
-    REAL,
+    public static enum Mode {
+        /** Running on a real robot. */
+        REAL,
 
-    /** Running a physics simulator. */
-    SIM,
+        /** Running a physics simulator. */
+        SIM,
 
-    /** Replaying from a log file. */
-    REPLAY
-  }
+        /** Replaying from a log file. */
+        REPLAY
+    }
 
-  public static final double[] elevatorPositions = /*{0, 95, 134}*/{0, 3.5, 14.6};
-  public static final double elevatorConversion = /*0.0368421053*/1;
+    public static final double[] elevatorPositions = /*{0, 95, 134}*/ {0, 3.5, 14.6};
+    public static final double elevatorConversion = /*0.0368421053*/ 1;
 }

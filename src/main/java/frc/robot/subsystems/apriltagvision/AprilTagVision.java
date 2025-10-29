@@ -4,7 +4,6 @@ import static frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.*;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
@@ -59,8 +58,8 @@ public class AprilTagVision extends VirtualSubsystem {
         Logger.recordOutput(loggingRoot + "Reef tag detected", isReefTagDetected);
         if (!AprilTagVisionConstants.kUsingVision) return;
         for (AprilTagVisionIO io : ios) {
-            Map<String, VisionUpdate> estimates = io.getEstimates(
-                    robot.isAligning(), robot.getSwerve().getPose());
+            Map<String, VisionUpdate> estimates =
+                    io.getEstimates(robot.isAligning(), robot.getSwerve().getPose());
             Logger.recordOutput(loggingRoot + "estimate size", estimates.size());
             for (int i = 0; i < estimates.values().size(); i++) {
                 VisionUpdate vu = estimates.values().toArray(new VisionUpdate[i])[i];
@@ -78,8 +77,7 @@ public class AprilTagVision extends VirtualSubsystem {
             var filteredEstimates = filterEstimates(estimates);
             for (VisionUpdate estimate : filteredEstimates.values()) {
                 var lastShouldJump = shouldJump;
-                if (robot.isAligning()
-                        && estimate.cameraName == AprilTagVisionConstants.BACK_CAMERA_NAME) continue;
+                if (robot.isAligning() && estimate.cameraName == AprilTagVisionConstants.BACK_CAMERA_NAME) continue;
 
                 shouldJump = Timer.getFPGATimestamp() - lastTimestamp > kMissingReadingsDelta;
                 if (!lastShouldJump && shouldJump) jumpTimestamp = Timer.getFPGATimestamp();
@@ -200,4 +198,4 @@ public class AprilTagVision extends VirtualSubsystem {
         }
         return true;
     }
-} 
+}
