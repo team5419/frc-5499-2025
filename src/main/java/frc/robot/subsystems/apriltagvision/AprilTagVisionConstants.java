@@ -2,6 +2,7 @@ package frc.robot.subsystems.apriltagvision;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
 
 public class AprilTagVisionConstants {
     public static final boolean kUsingVision = true;
@@ -17,7 +18,8 @@ public class AprilTagVisionConstants {
         new Rotation3d(0, 0, Units.degreesToRadians(-20)),
         new Rotation3d(0, 0, Units.degreesToRadians(20)),
         new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(180))
-    };;
+    };
+    ;
 
     public static final Transform3d[] kCameraTransform = new Transform3d[] {
         new Transform3d(
@@ -36,7 +38,7 @@ public class AprilTagVisionConstants {
                 Units.inchesToMeters(8),
                 kCameraRotations[2])
     };
-;
+    ;
 
     public static final double kAmbiguityRejectionLimit = 0.25;
     public static final double kDistanceRejectionLimit = 3;
