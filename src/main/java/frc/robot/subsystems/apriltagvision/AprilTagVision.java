@@ -17,6 +17,7 @@ import frc.robot.lib.VirtualSubsystem;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Setter;
 import org.ejml.simple.SimpleMatrix;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -26,6 +27,9 @@ public class AprilTagVision extends VirtualSubsystem {
     private AprilTagVisionIO[] ios;
     private AprilTagFieldLayout aprilTagFieldLayout;
     private final String loggingRoot = "AprilTagVision/";
+
+    @Setter
+    private boolean isVisionConnected = false;
 
     private boolean isReefTagDetected = false;
 
@@ -71,7 +75,7 @@ public class AprilTagVision extends VirtualSubsystem {
             // double devRot = 3.5; // radF
 
             camerasDisconnected.set(!io.getIsConnected());
-            robot.setVisionConnected(io.getIsConnected());
+            isVisionConnected |= io.getIsConnected();
             int i = 0;
 
             var filteredEstimates = filterEstimates(estimates);

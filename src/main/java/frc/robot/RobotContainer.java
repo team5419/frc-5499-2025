@@ -43,10 +43,9 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * 0.1)
             .withRotationalDeadband(MaxAngularRate * 0.1)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(0);
 
     private final SwerveDriveSubsystem drivetrain;
     private final ElevatorSubsystem elevator;
@@ -57,7 +56,6 @@ public class RobotContainer {
     private final ClimbSubsystem climb;
     private boolean aligning = false;
     private boolean isSlowmode = false;
-    private boolean connected = false;
 
     private final SendableChooser<Command> autoChooser;
 
@@ -100,48 +98,45 @@ public class RobotContainer {
         return aligning;
     }
 
-    public void setVisionConnected(boolean value) {
-        connected = value;
-    }
-
     private void configureBindings() {
         // ---------- Driving ----------
-        drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed)
-                .withVelocityY(-joystick.getLeftX() * MaxSpeed)
-                .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
+        drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-driver.getLeftY() * MaxSpeed)
+                .withVelocityY(-driver.getLeftX() * MaxSpeed)
+                .withRotationalRate(-driver.getRightX() * MaxAngularRate)));
 
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // ---------- Intake ----------
-        joystick.rightTrigger().onTrue(intake.setIntakeCommand(1.0));
-        joystick.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
-        joystick.rightTrigger().onFalse(intake.setIntakeCommand(0));
-        joystick.leftTrigger().onFalse(intake.setIntakeCommand(0));
+        driver.rightTrigger().onTrue(intake.setIntakeCommand(1.0));
+        driver.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
+        driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
+        driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
         // ---------- Elevator ----------
-        joystick.y().onTrue(elevator.changeElevateCommand(1));
-        joystick.a().onTrue(elevator.setElevateCommand(0));
+        driver.y().onTrue(elevator.changeElevateCommand(1));
+        driver.a().onTrue(elevator.setElevateCommand(0));
 
-        // ---------- Disloger ----------
-        joystick.leftBumper().onTrue(disloger.getDislogeCommand(1));
-        joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
-        joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
-        joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
+        // ---------- Dislodger ----------
+        operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
+        operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
 
         // ---------- Climber ----------
-        joystick.x().onTrue(climb.setClimberCommand(.5));
-        joystick.x().onFalse(climb.setClimberCommand(0));
-        joystick.povDown().onTrue(climb.setClimberCommand(-.5));
-        joystick.povDown().onFalse(climb.setClimberCommand(0));
+        // unclimb
+        operator.x().onTrue(climb.setClimberCommand(.5));
+        operator.x().onFalse(climb.setClimberCommand(0));
+
+        // climb in
+        driver.b().onTrue(climb.setClimberCommand(-.5));
+        driver.b().onFalse(climb.setClimberCommand(0));
 
         // ---------- Reset heading ----------
-        joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // ---------- Slowmode ----------
-        joystick.leftStick().onTrue(drivetrain.runOnce(() -> {
+        driver.leftBumper().onTrue(drivetrain.runOnce(() -> {
             isSlowmode = !isSlowmode;
             if (isSlowmode) {
                 MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 4;
