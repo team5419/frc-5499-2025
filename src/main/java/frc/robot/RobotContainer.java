@@ -109,33 +109,16 @@ public class RobotContainer {
         driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // ---------- Intake ----------
-        driver.rightTrigger().onTrue(intake.setIntakeCommand(1.0));
-        driver.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
-        driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
-        driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
+        // driver controls
+        // left bumper: slowmode
+        // left trigger: readjust coral
+        // right bumper: auto align
+        // right trigger: intake/outtake
+        // b: climb
+        // y: gyro reset
+        // a: stow elevator
 
-        // ---------- Elevator ----------
-        driver.y().onTrue(elevator.changeElevateCommand(1));
-        driver.a().onTrue(elevator.setElevateCommand(0));
-
-        // ---------- Dislodger ----------
-        operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
-        operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
-
-        // ---------- Climber ----------
-        // unclimb
-        operator.x().onTrue(climb.setClimberCommand(.5));
-        operator.x().onFalse(climb.setClimberCommand(0));
-
-        // climb in
-        driver.b().onTrue(climb.setClimberCommand(-.5));
-        driver.b().onFalse(climb.setClimberCommand(0));
-
-        // ---------- Reset heading ----------
-        driver.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-        // ---------- Slowmode ----------
+        // slowmode
         driver.leftBumper().onTrue(drivetrain.runOnce(() -> {
             isSlowmode = !isSlowmode;
             if (isSlowmode) {
@@ -146,6 +129,45 @@ public class RobotContainer {
                 MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
             }
         }));
+
+        // intake/outtake
+        driver.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
+        driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
+
+        // readjust
+        driver.leftTrigger().onTrue(intake.setIntakeCommand(1.0));
+        driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
+
+        // elevator up
+        driver.x().onTrue(elevator.changeElevateCommand(1));
+
+        // stow elevator
+        driver.a().onTrue(elevator.setElevateCommand(0));
+
+        // climb in
+        driver.b().onTrue(climb.setClimberCommand(-.5));
+        driver.b().onFalse(climb.setClimberCommand(0));
+
+        // gyro reset
+        driver.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        // operator controls
+        // pov up: L3
+        // pov left: L2
+        // pov down: L1
+        // start: emergency something
+        // left bumper: align late
+        // right bumper: align early
+        // right trigger: dislodge
+        // unclimb: x?
+
+        // unclimb
+        operator.x().onTrue(climb.setClimberCommand(.5));
+        operator.x().onFalse(climb.setClimberCommand(0));
+
+        // dislodge
+        operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
+        operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
     }
 
     // simple proportional turning control with Limelight.
