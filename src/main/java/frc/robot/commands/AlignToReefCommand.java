@@ -4,6 +4,7 @@
  ***********/
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,9 +22,12 @@ public class AlignToReefCommand extends Command {
         // addRequirements(drivetrain);
     }
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {}
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    //use import edu.wpi.first.math.geometry.Translation2d; to get fieldcentric setpoints
+
+  }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
