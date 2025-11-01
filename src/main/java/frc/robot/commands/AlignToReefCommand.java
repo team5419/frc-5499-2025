@@ -1,3 +1,7 @@
+/***********
+ * https://www.chiefdelphi.com/t/from-zero-to-auto-align-to-reef-tutorial-how-to-simply-auto-align-to-the-reef/494478
+ * https://github.com/ElectroBunny/BetaBot2025/blob/develop/src/main/java/frc/robot/commands/AlignToReefTagRelative.java
+ ***********/
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
