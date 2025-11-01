@@ -4,181 +4,211 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
+import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOPhoton;
 
 public class RobotContainer {
-  // kSpeedAt12Volts desired top speed
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-  // 3/4 of a rotation per second max angular velocity
-  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
-  // Setting up bindings for necessary control of the swerve drive platform
-  private final SwerveRequest.FieldCentric drive =
-    new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1)
-      .withRotationalDeadband(MaxAngularRate * 0.1)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    AprilTagVision aprilTagVision;
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+    // kSpeedAt12Volts desired top speed
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    // 3/4 of a rotation per second max angular velocity
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
-  private final SwerveDriveSubsystem drivetrain;
-  private final ElevatorSubsystem elevator;
-  private final DislogerSubsystem disloger;
-  private final LightsSubsystem lights;
-  private final IntakeSubsystem intake;
-  private final VisionSubsystem vision;
-  private final ClimbSubsystem climb;
+    // Setting up bindings for necessary control of the swerve drive platform
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(MaxSpeed * 0.1)
+            .withRotationalDeadband(MaxAngularRate * 0.1)
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-  private boolean isSlowmode = false;
+    private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(0);
 
-  private final SendableChooser<Command> autoChooser;
+    private final SwerveDriveSubsystem drivetrain;
+    private final ElevatorSubsystem elevator;
+    private final DislogerSubsystem disloger;
+    private final LightsSubsystem lights;
+    private final IntakeSubsystem intake;
+    private final VisionSubsystem vision;
+    private final ClimbSubsystem climb;
+    private boolean aligning = false;
+    private boolean isSlowmode = false;
 
-  public RobotContainer() {
-    lights = new LightsSubsystem();
+    private final SendableChooser<Command> autoChooser;
 
-    elevator = new ElevatorSubsystem(lights);
-    disloger = new DislogerSubsystem();
-    intake = new IntakeSubsystem();
-    climb = new ClimbSubsystem();
-    vision = new VisionSubsystem();
-    drivetrain = TunerConstants.createDrivetrain(vision);
+    public RobotContainer() {
+        lights = new LightsSubsystem();
 
-    drivetrain.configAutos();
+        elevator = new ElevatorSubsystem(lights);
+        disloger = new DislogerSubsystem();
+        intake = new IntakeSubsystem();
+        climb = new ClimbSubsystem();
+        vision = new VisionSubsystem();
+        drivetrain = TunerConstants.createDrivetrain(vision);
+        aprilTagVision = new AprilTagVision(this, new AprilTagVisionIOPhoton());
 
-    lights.setState(LightsState.DISABLED);
+        drivetrain.configAutos();
 
-    NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
-    NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
-    NamedCommands.registerCommand("Elevator L3", elevator.setElevateCommand(2));
-    NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
-    NamedCommands.registerCommand("Disloger Stop", disloger.getDislogeCommand(0));
-    NamedCommands.registerCommand("Disloger Reverse", disloger.getDislogeCommand(-1));
-    NamedCommands.registerCommand("Intake", intake.setIntakeCommand(1));
-    NamedCommands.registerCommand("Outtake", intake.setIntakeCommand(-1));
-    NamedCommands.registerCommand("Intake Stop", intake.setIntakeCommand(0));
+        lights.setState(LightsState.DISABLED);
 
-    autoChooser = AutoBuilder.buildAutoChooser("coral");
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+        NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
+        NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
+        NamedCommands.registerCommand("Elevator L3", elevator.setElevateCommand(2));
+        NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
+        NamedCommands.registerCommand("Disloger Stop", disloger.getDislogeCommand(0));
+        NamedCommands.registerCommand("Disloger Reverse", disloger.getDislogeCommand(-1));
+        NamedCommands.registerCommand("Intake", intake.setIntakeCommand(1));
+        NamedCommands.registerCommand("Outtake", intake.setIntakeCommand(-1));
+        NamedCommands.registerCommand("Intake Stop", intake.setIntakeCommand(0));
 
-    configureBindings();
-  }
+        autoChooser = AutoBuilder.buildAutoChooser("coral");
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
-  private void configureBindings() {
-    // ---------- Driving ----------
-    drivetrain.setDefaultCommand(drivetrain.applyRequest(() ->
-      drive
-        .withVelocityX(-joystick.getLeftY() * MaxSpeed)
-        .withVelocityY(-joystick.getLeftX() * MaxSpeed)
-        .withRotationalRate(-joystick.getRightX() * MaxAngularRate)
-      )
-    );
+        configureBindings();
+    }
 
-    joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    public SwerveDriveSubsystem getSwerve() {
+        return drivetrain;
+    }
 
-    // ---------- Intake ----------
-    joystick.rightTrigger().onTrue(intake.setIntakeCommand(1.0));
-    joystick.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
-    joystick.rightTrigger().onFalse(intake.setIntakeCommand(0));
-    joystick.leftTrigger().onFalse(intake.setIntakeCommand(0));
+    public boolean isAligning() {
+        return aligning;
+    }
 
-    // ---------- Elevator ----------
-    joystick.y().onTrue(elevator.changeElevateCommand(1));
-    joystick.a().onTrue(elevator.setElevateCommand(0));
+    private void configureBindings() {
+        // ---------- Driving ----------
+        drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-driver.getLeftY() * MaxSpeed)
+                .withVelocityY(-driver.getLeftX() * MaxSpeed)
+                .withRotationalRate(-driver.getRightX() * MaxAngularRate)));
 
-    // ---------- Disloger ----------
-    joystick.leftBumper().onTrue(disloger.getDislogeCommand(1));
-    joystick.leftBumper().onFalse(disloger.getDislogeCommand(0));
-    joystick.rightBumper().onTrue(disloger.getDislogeCommand(-1));
-    joystick.rightBumper().onFalse(disloger.getDislogeCommand(0));
+        driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-    // ---------- Climber ----------
-    joystick.x().onTrue(climb.setClimberCommand(.5));
-    joystick.x().onFalse(climb.setClimberCommand(0));
-    joystick.povDown().onTrue(climb.setClimberCommand(-.5));
-    joystick.povDown().onFalse(climb.setClimberCommand(0));
+        // driver controls
+        // left bumper: slowmode
+        // left trigger: readjust coral
+        // right bumper: auto align
+        // right trigger: intake/outtake
+        // b: climb
+        // y: gyro reset
+        // a: stow elevator
 
-    // ---------- Reset heading ----------
-    joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        // slowmode
+        driver.leftBumper().onTrue(drivetrain.runOnce(() -> {
+            isSlowmode = !isSlowmode;
+            if (isSlowmode) {
+                MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 4;
+                MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) / 2;
+            } else {
+                MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+                MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
+            }
+        }));
 
+        // intake/outtake
+        driver.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
+        driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
 
-    // ---------- Slowmode ----------
-    joystick.leftStick().onTrue(
-      drivetrain.runOnce(() -> {
-        isSlowmode = !isSlowmode;
-        if (isSlowmode) {
-          MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 4;
-          MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) / 2;
-        } else {
-          MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-          MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
-        }
-      })
-    );
-  }
+        // readjust
+        driver.leftTrigger().onTrue(intake.setIntakeCommand(1.0));
+        driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
-  // simple proportional turning control with Limelight.
-  // "proportional control" is a control algorithm in which the output is proportional to the error.
-  // in this case, we are going to return an angular velocity that is proportional to the
-  // "tx" value from the Limelight.
-  double limelight_aim_proportional() {
-    // kP (constant of proportionality)
-    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
-    // if it is too high, the robot will oscillate around.
-    // if it is too low, the robot will never reach its target
-    // if the robot never turns in the correct direction, kP should be inverted.
-    double kP = .035;
+        // elevator up
+        driver.x().onTrue(elevator.changeElevateCommand(1));
 
-    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of
-    // your limelight 3 feed, tx should return roughly 31 degrees.
-    double targetingAngularVelocity = LimelightHelpers.getTX("") * kP;
+        // stow elevator
+        driver.a().onTrue(elevator.setElevateCommand(0));
 
-    // convert to radians per second for our drive method
-    targetingAngularVelocity *= MaxAngularRate;
+        // climb in
+        driver.b().onTrue(climb.setClimberCommand(-.5));
+        driver.b().onFalse(climb.setClimberCommand(0));
 
-    //invert since tx is positive when the target is to the right of the crosshair
-    targetingAngularVelocity *= -1.0;
+        // gyro reset
+        driver.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    return targetingAngularVelocity;
-  }
+        // operator controls
+        // pov up: L3
+        // pov left: L2
+        // pov down: L1
+        // start: emergency something
+        // left bumper: align late
+        // right bumper: align early
+        // right trigger: dislodge
+        // unclimb: x?
 
-  // simple proportional ranging control with Limelight's "ty" value
-  // this works best if your Limelight's mount height and target mount height are different.
-  // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
-  double limelight_range_proportional() {
-    double kP = 0.1;
-    double targetingForwardSpeed = LimelightHelpers.getTY("") * kP;
-    targetingForwardSpeed *= MaxSpeed;
-    targetingForwardSpeed *= -1.0;
-    return targetingForwardSpeed;
-  }
+        // unclimb
+        operator.x().onTrue(climb.setClimberCommand(.5));
+        operator.x().onFalse(climb.setClimberCommand(0));
 
-  public Command getAutonomousCommand() {
-    System.out.println(autoChooser.getSelected().getName());
-    return autoChooser.getSelected();
-  }
+        // dislodge
+        operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
+        operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
+    }
+
+    // simple proportional turning control with Limelight.
+    // "proportional control" is a control algorithm in which the output is proportional to the error.
+    // in this case, we are going to return an angular velocity that is proportional to the
+    // "tx" value from the Limelight.
+    double limelight_aim_proportional() {
+        // kP (constant of proportionality)
+        // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+        // if it is too high, the robot will oscillate around.
+        // if it is too low, the robot will never reach its target
+        // if the robot never turns in the correct direction, kP should be inverted.
+        double kP = .035;
+
+        // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of
+        // your limelight 3 feed, tx should return roughly 31 degrees.
+        double targetingAngularVelocity = LimelightHelpers.getTX("") * kP;
+
+        // convert to radians per second for our drive method
+        targetingAngularVelocity *= MaxAngularRate;
+
+        // invert since tx is positive when the target is to the right of the crosshair
+        targetingAngularVelocity *= -1.0;
+
+        return targetingAngularVelocity;
+    }
+
+    // simple proportional ranging control with Limelight's "ty" value
+    // this works best if your Limelight's mount height and target mount height are different.
+    // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging
+    // rather than "ty"
+    double limelight_range_proportional() {
+        double kP = 0.1;
+        double targetingForwardSpeed = LimelightHelpers.getTY("") * kP;
+        targetingForwardSpeed *= MaxSpeed;
+        targetingForwardSpeed *= -1.0;
+        return targetingForwardSpeed;
+    }
+
+    public Command getAutonomousCommand() {
+        System.out.println(autoChooser.getSelected().getName());
+        return autoChooser.getSelected();
+    }
 }

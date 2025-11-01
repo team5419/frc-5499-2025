@@ -10,31 +10,31 @@ import frc.robot.RobotMap;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private final SparkMax intake = new SparkMax(RobotMap.INTAKE, MotorType.kBrushless);
-  DigitalInput input = new DigitalInput(RobotMap.BEAM_BREAK);
+    private final SparkMax intake = new SparkMax(RobotMap.INTAKE, MotorType.kBrushless);
+    DigitalInput input = new DigitalInput(RobotMap.BEAM_BREAK);
 
-  public Command setIntakeCommand(double direction) {
-    return Commands.runOnce(() -> intake.set(direction));
-  }
+    public Command setIntakeCommand(double direction) {
+        return Commands.runOnce(() -> intake.set(direction));
+    }
 
-  public Command setIntakeWithSensorCommand(double direction) {
-    return Commands.runOnce(() -> {
-      intake.set(direction);
-      // if (input.get()) {
-      //   intake.set(0);
-      // } else {
-      //   intake.set(direction);
-      // }
-    });
-  }
+    public Command setIntakeWithSensorCommand(double direction) {
+        return Commands.runOnce(() -> {
+            intake.set(direction);
+            // if (input.get()) {
+            //   intake.set(0);
+            // } else {
+            //   intake.set(direction);
+            // }
+        });
+    }
 
-  @Override
-  public void periodic() {
-    Logger.recordOutput("Intake Subsystem/Intake Motor Output", intake.get());
-    Logger.recordOutput("Intake Subsystem/Beam Break Sensor", input.get());
-  }
+    @Override
+    public void periodic() {
+        Logger.recordOutput("Intake Subsystem/Intake Motor Output", intake.get());
+        Logger.recordOutput("Intake Subsystem/Beam Break Sensor", input.get());
+    }
 
-  public boolean getBeamBreak() {
-    return input.get();
-  }
+    public boolean getBeamBreak() {
+        return input.get();
+    }
 }
