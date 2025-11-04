@@ -10,12 +10,14 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
+    public static final double[] elevatorPositions = /*{0, 95, 134}*/ {0, 3.5, 14.6};
+    public static final double elevatorConversion = /*0.0368421053*/ 1;
+
     private final SparkMax leftElevator = new SparkMax(RobotMap.LEFT_ELEVATOR, MotorType.kBrushless);
     private final SparkMax rightElevator = new SparkMax(RobotMap.RIGHT_ELEVATOR, MotorType.kBrushless);
 
@@ -65,7 +67,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void updateElevator() {
-        double position = Constants.elevatorPositions[this.currentPosition] * Constants.elevatorConversion;
+        double position = elevatorPositions[this.currentPosition] * elevatorConversion;
 
         leftController.setReference(position, ControlType.kPosition);
         rightController.setReference(position, ControlType.kPosition);
