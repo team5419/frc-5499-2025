@@ -94,11 +94,14 @@ public class AprilTagVision extends VirtualSubsystem {
                         estimate.targetsUsed,
                         shouldJump ? kHighTrustRotationalStdDevMultiplier : kRotationalStdDevMultiplier);
                 // add weighted estimate to swerve pose estimator
+                Logger.recordOutput(loggingRoot + "devx", devXY);
+                Logger.recordOutput(loggingRoot + "devRot", devRot);
+
                 robot.getSwerve()
                         .addVisionMeasurement(
                                 estimate.getEstimatedPose().toPose2d(),
                                 estimate.timestamp,
-                                new Matrix<N3, N1>(new SimpleMatrix(new double[] {devXY, devXY, devRot})));
+                                new Matrix<N3, N1>(new SimpleMatrix(new double[] {0, 0, 0})));
 
                 lastTimestamp = Timer.getFPGATimestamp();
                 Logger.recordOutput(loggingRoot + "Should Jump", shouldJump);
