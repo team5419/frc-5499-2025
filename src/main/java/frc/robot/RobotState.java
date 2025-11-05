@@ -23,4 +23,8 @@ public class RobotState {
     @Getter
     @Setter
     private boolean isAligning;
+
+    @Getter
+    @Setter
+    private boolean isAutoFinished;
 }
