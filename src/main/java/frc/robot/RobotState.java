@@ -15,4 +15,12 @@ public class RobotState {
     @Getter
     @Setter
     private boolean isEarly;
+
+    @Getter
+    @Setter
+    private boolean autoAlignAtGoal;
+
+    @Getter
+    @Setter
+    private boolean isAligning;
 }

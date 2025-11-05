@@ -28,6 +28,7 @@ public class SwerveConstants {
                     Math.hypot(TunerConstants.getBackLeft().LocationX, TunerConstants.getBackLeft().LocationY),
                     Math.hypot(TunerConstants.getBackRight().LocationX, TunerConstants.getBackRight().LocationY)));
 
+    // should match values in pathplanner
     public static final double kRobotMass = 63.957;
     public static final double kRobotMoi = 3.825;
     public static final double kWheelCOF = 1.9;
