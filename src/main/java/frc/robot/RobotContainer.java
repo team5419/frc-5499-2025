@@ -79,7 +79,7 @@ public class RobotContainer {
     public RobotContainer() {
         lights = new LightsSubsystem();
 
-        elevator = new ElevatorSubsystem(lights);
+        elevator = new ElevatorSubsystem();
         disloger = new DislogerSubsystem();
         intake = new IntakeSubsystem();
         climb = new ClimbSubsystem();

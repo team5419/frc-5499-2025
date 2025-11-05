@@ -13,7 +13,6 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotState;
 import frc.robot.lib.LoggedTunableNumber;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem.ElevatorGoal;
 import frc.robot.subsystems.swerve.Swerve;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
