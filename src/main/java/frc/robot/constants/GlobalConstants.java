@@ -26,11 +26,7 @@ public class GlobalConstants {
     public static final double kOverrideJoystick = 0.7;
 
     public static final String kRIOName = "rio";
-    public static final String kCANivoreName =
-            switch (kRobotType) {
-                case BEARNACLES -> "DrivebaseCanivore";
-                default -> "Drivebase";
-            };
+    public static final String kCANivoreName = "Drivebase";
 
     public static RobotType getRobotType() {
         if (RobotBase.isReal() && kRobotType == RobotType.SIMBOT) {

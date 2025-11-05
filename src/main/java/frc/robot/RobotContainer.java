@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AutoScore;
 import frc.robot.commands.DriveCommands;
@@ -155,7 +156,7 @@ public class RobotContainer {
         driver.b().onFalse(climb.setClimberCommand(0));
 
         // gyro reset
-        // driver.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.y().onTrue(Commands.runOnce(() -> swerve.resetGyro()).ignoringDisable(true));
 
         // operator controls
         // pov up: L3
