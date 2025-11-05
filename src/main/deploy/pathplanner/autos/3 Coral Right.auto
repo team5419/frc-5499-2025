@@ -1,0 +1,126 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "S-5E"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Dealgea"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5E-CS"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CS-6E"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Dealgea"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "6E-CS"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CS-6L"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Dealgea"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score Coral"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

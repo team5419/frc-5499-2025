@@ -206,6 +206,17 @@ public class RobotContainer {
         targetingForwardSpeed *= -1.0;
         return targetingForwardSpeed;
     }
+    private void configNamedCommands() {
+        NamedCommands.registerCommand(
+                "Record Time", new InstantCommand(() -> RobotState.getInstance().setAutoFinished(true)));
+        NamedCommands.registerCommand(
+                "Intake Coral", new InstantCommand());
+        NamedCommands.registerCommand(
+                "Score Coral", new InstantCommand());
+        NamedCommands.registerCommand(
+                "Dealgae", new InstantCommand());
+        NamedCommands.registerCommand(
+                "Auto Align", new InstantCommand());
 
     public Command getAutonomousCommand() {
         System.out.println(autoChooser.getSelected().getName());

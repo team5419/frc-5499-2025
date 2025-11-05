@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 5.6601769911504425,
+        "y": 5.371017699115043
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7931352459016394,
-        "y": 6.812141393442622
+        "x": 6.333185840707966,
+        "y": 6.164823008849558
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 1.656637168141593,
+        "y": 6.837831858407079
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 2.692035398230089,
+        "y": 6.389159292035397
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 129.55966796899446
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left 3 Coral Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -119.05460409907707
   },
   "useDefaultConstraints": true
 }
