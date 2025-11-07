@@ -133,12 +133,12 @@ public class RobotContainer {
                 MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
             }
         }));
-
-        // intake/outtake
+        //Left Bumper - Auto Align
+        //Shoot Manual
         driver.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
         driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
 
-        // readjust
+        // Dislodge. 
         driver.leftTrigger().onTrue(intake.setIntakeCommand(1.0));
         driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
@@ -168,7 +168,9 @@ public class RobotContainer {
         // unclimb
         operator.x().onTrue(climb.setClimberCommand(.5));
         operator.x().onFalse(climb.setClimberCommand(0));
-
+        //Triggers - Intake
+        //Bumper, Early Late
+        //D pad, 2-3
         // dislodge
         operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
         operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
