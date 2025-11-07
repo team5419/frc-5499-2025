@@ -15,6 +15,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.GlobalConstants;
+import frc.robot.lib.VirtualSubsystem;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -53,7 +55,7 @@ public class Robot extends LoggedRobot {
         }
 
         // Set up data receivers & replay source
-        switch (Constants.currentMode) {
+        switch (GlobalConstants.getMode()) {
             case REAL:
                 // Running on a real robot, log to a USB stick ("/U/logs")
                 Logger.addDataReceiver(new WPILOGWriter());
@@ -84,6 +86,7 @@ public class Robot extends LoggedRobot {
     /** This function is called periodically during all modes. */
     @Override
     public void robotPeriodic() {
+        VirtualSubsystem.periodicAll();
         CommandScheduler.getInstance().run();
     }
 
