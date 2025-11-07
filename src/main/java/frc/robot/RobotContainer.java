@@ -172,6 +172,7 @@ public class RobotContainer {
         //Bumper, Early Late
         //D pad, 2-3
         // dislodge
+        //X,A Climb
         operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
         operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
     }

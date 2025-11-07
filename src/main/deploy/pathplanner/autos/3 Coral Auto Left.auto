@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": null
+                  "pathName": "Dislodge 3L"
                 }
               }
             ]
@@ -81,6 +81,12 @@
                 "data": {
                   "name": "Auto Align"
                 }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Dislodge 2L"
+                }
               }
             ]
           }
@@ -117,7 +123,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CS-2E"
+                  "pathName": "2E-CS"
                 }
               },
               {
@@ -130,6 +136,12 @@
                 "type": "named",
                 "data": {
                   "name": "Auto Align"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Dislodge 2E"
                 }
               }
             ]
