@@ -17,16 +17,28 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Dealgea"
+                  "name": "Auto Align"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Score Coral"
+                  "name": "Dealgea"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Dislodge 5E"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         },
         {
@@ -38,14 +50,14 @@
                 "data": {
                   "pathName": "5E-CS"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Coral"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
           }
         },
         {
@@ -61,16 +73,28 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Dealgea"
+                  "name": "Score Coral"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Score Coral"
+                  "name": "Dealgea"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Dislodge 6E"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         },
         {
@@ -82,14 +106,14 @@
                 "data": {
                   "pathName": "6E-CS"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Coral"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
           }
         },
         {
@@ -105,16 +129,28 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Dealgea"
+                  "name": "Auto Align"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Score Coral"
+                  "name": "Dealgea"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Dislodge 6L"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         }
       ]

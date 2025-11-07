@@ -23,10 +23,22 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Score Coral"
+                  "name": "Auto Align"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": null
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         },
         {
@@ -38,14 +50,14 @@
                 "data": {
                   "pathName": "3L-CS"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Coral"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
           }
         },
         {
@@ -67,10 +79,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Score Coral"
+                  "name": "Auto Align"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         },
         {
@@ -82,14 +100,14 @@
                 "data": {
                   "pathName": "2L-CS"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Coral"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
           }
         },
         {
@@ -111,10 +129,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Score Coral"
+                  "name": "Auto Align"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         }
       ]

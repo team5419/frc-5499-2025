@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.6601769911504425,
-        "y": 5.371017699115043
+        "x": 3.8720286885245896,
+        "y": 2.4606045081967203
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.333185840707966,
-        "y": 6.164823008849558
+        "x": 3.5033251465077666,
+        "y": 1.9660448235522168
       },
       "isLocked": false,
-      "linkedName": "3L-CS"
+      "linkedName": "Dislodge 6E"
     },
     {
       "anchor": {
-        "x": 1.2587090163934425,
-        "y": 7.219723360655737
+        "x": 3.296618852459016,
+        "y": 1.6574282786885248
       },
       "prevControl": {
-        "x": 2.2941072464819383,
-        "y": 6.771050794284055
+        "x": 3.1617172877428183,
+        "y": 1.4469489024135047
+      },
+      "nextControl": {
+        "x": 3.595564346517436,
+        "y": 2.123856234969221
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.8720286885245896,
+        "y": 2.4606045081967203
+      },
+      "prevControl": {
+        "x": 3.8849429267616458,
+        "y": 2.171442792606944
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 129.55966796899446
+    "rotation": 58.201087175705545
   },
   "reversed": false,
-  "folder": "Left 3 Coral Auto",
+  "folder": "Right 3 Coral",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.05460409907707
+    "rotation": 56.82148834060718
   },
   "useDefaultConstraints": true
 }

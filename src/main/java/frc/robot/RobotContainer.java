@@ -12,10 +12,13 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -28,6 +31,7 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIOPhoton;
+// import frc.robot.RobotState; // Uncomment this line if RobotState exists in the package
 
 public class RobotContainer {
 
@@ -214,10 +218,10 @@ public class RobotContainer {
         NamedCommands.registerCommand(
                 "Score Coral", new InstantCommand());
         NamedCommands.registerCommand(
-                "Dealgae", new InstantCommand());
+                "Dealgea", new InstantCommand());
         NamedCommands.registerCommand(
                 "Auto Align", new InstantCommand());
-
+    }
     public Command getAutonomousCommand() {
         System.out.println(autoChooser.getSelected().getName());
         return autoChooser.getSelected();

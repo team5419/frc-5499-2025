@@ -8,20 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.333185840707966,
-        "y": 6.164823008849558
+        "x": 5.385012438306093,
+        "y": 5.142061418597081
       },
       "isLocked": false,
-      "linkedName": "3L-CS"
+      "linkedName": "Dislodge 3L"
     },
     {
       "anchor": {
-        "x": 1.2587090163934425,
-        "y": 7.219723360655737
+        "x": 6.36547131147541,
+        "y": 6.236731557377048
       },
       "prevControl": {
-        "x": 2.2941072464819383,
-        "y": 6.771050794284055
+        "x": 6.20967388263559,
+        "y": 6.017923765803699
+      },
+      "nextControl": {
+        "x": 6.51047634052283,
+        "y": 6.440382095188656
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.6601769911504425,
+        "y": 5.371017699115043
+      },
+      "prevControl": {
+        "x": 5.9073016404675505,
+        "y": 5.580919544888897
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 129.55966796899446
+    "rotation": -121.8274465766731
   },
   "reversed": false,
   "folder": "Left 3 Coral Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.05460409907707
+    "rotation": -126.09828396710803
   },
   "useDefaultConstraints": true
 }
