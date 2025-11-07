@@ -38,6 +38,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Auto Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Score Coral"
           }
         },
@@ -75,20 +81,26 @@
                 "data": {
                   "name": "Dealgea"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto Align"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Dislodge 2L"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Align"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Dislodge 2L"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Align"
           }
         },
         {
@@ -131,20 +143,26 @@
                 "data": {
                   "name": "Dealgea"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto Align"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Dislodge 2E"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Align"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Dislodge 2E"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Align"
           }
         },
         {
