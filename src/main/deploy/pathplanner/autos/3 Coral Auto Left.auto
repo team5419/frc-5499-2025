@@ -48,16 +48,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "3L-CS"
-                }
-              }
-            ]
+            "pathName": "3L-CS"
           }
         },
         {
@@ -110,16 +103,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "2L-CS"
-                }
-              }
-            ]
+            "pathName": "2L-CS"
           }
         },
         {
