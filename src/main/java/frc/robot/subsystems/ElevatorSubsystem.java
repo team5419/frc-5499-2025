@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 import frc.robot.lib.LoggedTunableNumber;
-import frc.robot.subsystems.LightsSubsystem.LightsState;
 import java.util.function.DoubleSupplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
@@ -91,23 +90,5 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         leftController.setReference(position, ControlType.kPosition);
         rightController.setReference(position, ControlType.kPosition);
-
-        LightsState state;
-        switch (this.currentPosition) {
-            case 0:
-                state = LightsState.L1;
-                break;
-            case 1:
-                state = LightsState.L2;
-                break;
-            case 2:
-                state = LightsState.L3;
-                break;
-            default:
-                state = LightsState.IDLE;
-                break;
-        }
-
-        LightsSubsystem.getInstance().setState(state);
     }
 }

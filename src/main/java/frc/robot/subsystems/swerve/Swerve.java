@@ -390,9 +390,9 @@ public class Swerve extends SubsystemBase {
     public Pose2d getBestCoralAutoAlign() {
         Translation2d offset = RobotState.getInstance().isEarly()
                 ? FieldConstants.CoralTags.kCoralAlignOffset.plus(
-                        new Translation2d(-0.025, 0.05 + .0175 + Units.inchesToMeters(1.5)))
+                        new Translation2d(-0.005, 0.05 + .0175 + Units.inchesToMeters(1.5)))
                 : FieldConstants.CoralTags.kCoralAlignOffset
-                        .plus(new Translation2d(0.025, 0.142))
+                        .plus(new Translation2d(-0.015, 0.142))
                         .unaryMinus();
         return getBestCoralTag()
                 .plus(GeomUtil.toTransform2d(offset))
