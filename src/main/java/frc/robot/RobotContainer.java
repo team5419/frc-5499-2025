@@ -10,13 +10,13 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.AutoScore;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -32,6 +32,7 @@ import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.generated.TunerConstantsBearium;
 import frc.robot.subsystems.swerve.gyro.GyroIOPigeon2;
 import frc.robot.subsystems.swerve.module.ModuleIOTalonFX;
+import java.io.File;
 import lombok.Getter;
 
 public class RobotContainer {
@@ -174,11 +175,11 @@ public class RobotContainer {
         // unclimb
         operator.x().onTrue(climb.setClimberCommand(.5));
         operator.x().onFalse(climb.setClimberCommand(0));
-        //Triggers - Intake
-        //Bumper, Early Late
-        //D pad, 2-3
+        // Triggers - Intake
+        // Bumper, Early Late
+        // D pad, 2-3
         // dislodge
-        //X,A Climb
+        // X,A Climb
         operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
         operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
     }
@@ -223,14 +224,10 @@ public class RobotContainer {
     private void configNamedCommands() {
         NamedCommands.registerCommand(
                 "Record Time", new InstantCommand(() -> RobotState.getInstance().setAutoFinished(true)));
-        NamedCommands.registerCommand(
-                "Intake Coral", new InstantCommand());
-        NamedCommands.registerCommand(
-                "Score Coral", new InstantCommand());
-        NamedCommands.registerCommand(
-                "Dealgea", new InstantCommand());
-        NamedCommands.registerCommand(
-                "Auto Align", new InstantCommand());
+        NamedCommands.registerCommand("Intake Coral", new InstantCommand());
+        NamedCommands.registerCommand("Score Coral", new InstantCommand());
+        NamedCommands.registerCommand("Dealgea", new InstantCommand());
+        NamedCommands.registerCommand("Auto Align", new InstantCommand());
 
         NamedCommands.registerCommand("Intake Coral", new InstantCommand());
         NamedCommands.registerCommand("Score Coral", new InstantCommand());
@@ -241,5 +238,27 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         System.out.println(autoChooser.getSelected().getName());
         return autoChooser.getSelected();
+    }
+    ;
+
+    public SendableChooser<Command> buildAutoChooser() {
+        SendableChooser<Command> chooser = new SendableChooser<>();
+        chooser.setDefaultOption("Do nothing", new InstantCommand());
+        File autosDir = new File(Filesystem.getDeployDirectory(), "pathplanner/autos");
+        for (File f : autosDir.listFiles()) {
+            if (!f.isDirectory()) {
+                String fileName[] = f.getName().split("\\.");
+                String autoName = fileName[0];
+                chooser.addOption(
+                        autoName, AutoBuilder.buildAuto(autoName).beforeStarting(() -> System.out.println(autoName)));
+            }
+        }
+        chooser.addOption("3-Coral-Right", new PathPlannerAuto("3-Coral-Left", true));
+        return chooser;
+    }
+
+    public AprilTagVision getAprilTagVision() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAprilTagVision'");
     }
 }
