@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7619469026548673,
-        "y": 5.474557522123893
+        "x": 3.8220000000000005,
+        "y": 5.49725
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1287909836065575,
-        "y": 6.584375
+        "x": 3.1888440809516907,
+        "y": 6.6070674778761065
       },
       "isLocked": false,
-      "linkedName": "Dislodge 2L"
+      "linkedName": "2L"
     },
     {
       "anchor": {
@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 3.7619469026548673,
-        "y": 5.474557522123893
+        "x": 3.8220000000000005,
+        "y": 5.49725
       },
       "prevControl": {
-        "x": 3.657017046155631,
-        "y": 5.70147099729681
+        "x": 3.7170701435007643,
+        "y": 5.724163475172917
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "2L"
     }
   ],
   "rotationTargets": [],
@@ -58,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.858541068346085
+    "rotation": -59.47029410006587
   },
   "reversed": false,
   "folder": "DisLodge",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.743562836470794
+    "rotation": -59.47029410006587
   },
   "useDefaultConstraints": true
 }

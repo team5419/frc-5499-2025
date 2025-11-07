@@ -12,7 +12,7 @@
         "y": 4.6497000774760995
       },
       "isLocked": false,
-      "linkedName": "Dislodge 2E"
+      "linkedName": "2E"
     },
     {
       "anchor": {
@@ -41,7 +41,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "2E"
     }
   ],
   "rotationTargets": [],
@@ -58,7 +58,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.52411099675424
+    "rotation": -62.80187205149085
   },
   "reversed": false,
   "folder": "DisLodge",

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1628073770491802,
-        "y": 7.23171106557377
+        "x": 1.2285000000000001,
+        "y": 7.2035
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.118184355393579,
-        "y": 5.084739693069489
+        "x": 3.183876978344399,
+        "y": 5.056528627495719
       },
       "isLocked": false,
-      "linkedName": "CS-2E"
+      "linkedName": "CS"
     },
     {
       "anchor": {
-        "x": 3.380532786885246,
-        "y": 5.301690573770491
+        "x": 3.451327433628319,
+        "y": 5.319247787610619
       },
       "prevControl": {
-        "x": 2.610663220567459,
-        "y": 6.437754642854227
+        "x": 2.6814578673105323,
+        "y": 6.455311856694355
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "2E"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -56.86439045128112
+    "rotation": -62.80187205149085
   },
   "reversed": false,
   "folder": "Left 3 Coral Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 136.29216688625
+    "rotation": 133.6028189727037
   },
   "useDefaultConstraints": true
 }

@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "S-5E"
+                  "pathName": "SR-5E"
                 }
               },
               {
@@ -48,7 +48,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "5E-CS"
+                  "pathName": "5E-CSR"
                 }
               }
             ]
@@ -67,7 +67,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CS-6E"
+                  "pathName": "CSR-6E"
                 }
               },
               {
@@ -104,7 +104,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "6E-CS"
+                  "pathName": "6E-CSR"
                 }
               }
             ]
@@ -123,7 +123,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CS-6L"
+                  "pathName": "CSR-6L"
                 }
               },
               {

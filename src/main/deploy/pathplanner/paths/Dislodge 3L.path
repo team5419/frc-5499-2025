@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.6601769911504425,
-        "y": 5.371017699115043
+        "x": 5.499,
+        "y": 5.2925
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.385012438306093,
-        "y": 5.142061418597081
+        "x": 5.2238354471556505,
+        "y": 5.0635437194820385
       },
       "isLocked": false,
-      "linkedName": "Dislodge 3L"
+      "linkedName": "3L"
     },
     {
       "anchor": {
@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 5.6601769911504425,
-        "y": 5.371017699115043
+        "x": 5.499,
+        "y": 5.2925
       },
       "prevControl": {
-        "x": 5.9073016404675505,
-        "y": 5.580919544888897
+        "x": 5.746124649317108,
+        "y": 5.502401845773854
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "3L"
     }
   ],
   "rotationTargets": [],
@@ -58,7 +58,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.8274465766731
+    "rotation": -126.09828396710803
   },
   "reversed": false,
   "folder": "DisLodge",

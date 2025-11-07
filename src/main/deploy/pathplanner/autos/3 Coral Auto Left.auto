@@ -19,20 +19,20 @@
                 "data": {
                   "name": "Dealgea"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto Align"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Dislodge 3L"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Align"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Dislodge 3L"
           }
         },
         {

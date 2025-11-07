@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9710040983606557,
-        "y": 0.9141905737704917
+        "x": 7.53675,
+        "y": 1.548499999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5535912610798717,
-        "y": 2.689336334088581
+        "x": 6.015749999999998,
+        "y": 2.074999999999998
       },
       "isLocked": false,
-      "linkedName": "CS-6L"
+      "linkedName": "SR"
     },
     {
       "anchor": {
-        "x": 3.46125,
-        "y": 2.7379999999999995
+        "x": 5.3527499999999995,
+        "y": 2.679499999999999
       },
       "prevControl": {
-        "x": 2.637397038515145,
-        "y": 1.8791911664959318
+        "x": 6.045,
+        "y": 2.386999999999999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "5E"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 60.52411099675423
+    "rotation": 119.42745640318965
   },
   "reversed": false,
   "folder": "Right 3 Coral",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -122.2287574350985
+    "rotation": 145.92280471986925
   },
   "useDefaultConstraints": true
 }
