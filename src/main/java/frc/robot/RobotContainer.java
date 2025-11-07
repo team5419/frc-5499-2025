@@ -11,7 +11,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -232,7 +231,7 @@ public class RobotContainer {
                 "Dealgea", new InstantCommand());
         NamedCommands.registerCommand(
                 "Auto Align", new InstantCommand());
-    }
+
         NamedCommands.registerCommand("Intake Coral", new InstantCommand());
         NamedCommands.registerCommand("Score Coral", new InstantCommand());
         NamedCommands.registerCommand("Dealgae", new InstantCommand());
