@@ -51,13 +51,11 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator = new CommandXboxController(0);
 
-    @Getter
     private final AprilTagVision aprilTagVision;
 
     @Getter
     private final Swerve swerve;
 
-    // @Getter
     // private final SwerveDriveSubsystem drivetrain;
 
     @Getter
@@ -75,8 +73,11 @@ public class RobotContainer {
     @Getter
     private final ClimbSubsystem climb;
 
-    @Getter
     private boolean aligning = false;
+
+    public boolean isAligning() {
+        return aligning;
+    }
 
     private final SendableChooser<Command> autoChooser;
 
