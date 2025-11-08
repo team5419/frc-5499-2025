@@ -189,14 +189,16 @@ public class RobotContainer {
         // D pad, 2-3
         // dislodge
         // X,A Climb
+        operator.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
+        operator.rightTrigger().onFalse(intake.setIntakeCommand(0));
 
         operator.leftBumper()
                 .onTrue(new InstantCommand(() -> RobotState.getInstance().setEarly(false)));
         operator.rightBumper()
                 .onTrue(new InstantCommand(() -> RobotState.getInstance().setEarly(true)));
 
-        operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
-        operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
+        operator.leftTrigger().onTrue(disloger.getDislogeCommand(1));
+        operator.leftTrigger().onFalse(disloger.getDislogeCommand(0));
     }
 
     // simple proportional turning control with Limelight.
