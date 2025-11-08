@@ -176,11 +176,15 @@ public class RobotContainer {
         operator.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
         operator.leftTrigger().onFalse(intake.setIntakeCommand(0));
         // Dislodge
-        operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
-        operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
+        operator.rightTrigger().onTrue(intake.setIntakeCommand(0.5));
+        operator.rightTrigger().onFalse(intake.setIntakeCommand(0)
+        );
         // Deploy Dislodger
         operator.y().onTrue(disloger.getDislogeCommand(-1));
         operator.y().onFalse(disloger.getDislogeCommand(0));
+        //Dislodge
+        operator.a().onTrue(intake.setIntakeCommand(-0.5));
+        operator.a().onFalse(intake.setIntakeCommand(0));
         // Early - Late
         operator.leftBumper()
                 .onTrue(new InstantCommand(() -> RobotState.getInstance().setEarly(false)));
