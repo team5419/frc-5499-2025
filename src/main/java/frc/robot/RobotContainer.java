@@ -8,69 +8,92 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.generated.TunerConstants;
+import frc.robot.commands.AutoAlignToCoral;
+import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
-import frc.robot.subsystems.SwerveDriveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIOPhoton;
+import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.SwerveConstants;
+import frc.robot.subsystems.swerve.generated.TunerConstantsBearium;
+import frc.robot.subsystems.swerve.gyro.GyroIOPigeon2;
+import frc.robot.subsystems.swerve.module.ModuleIOTalonFX;
+import lombok.Getter;
 
 public class RobotContainer {
 
-    AprilTagVision aprilTagVision;
-
     // kSpeedAt12Volts desired top speed
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    private double MaxSpeed = TunerConstantsBearium.kSpeedAt12Volts.in(MetersPerSecond);
     // 3/4 of a rotation per second max angular velocity
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     // Setting up bindings for necessary control of the swerve drive platform
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1)
-            .withRotationalDeadband(MaxAngularRate * 0.1)
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    // private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    //         .withDeadband(MaxSpeed * 0.1)
+    //         .withRotationalDeadband(MaxAngularRate * 0.1)
+    //         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final CommandXboxController driver = new CommandXboxController(0);
-    private final CommandXboxController operator = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(1);
 
-    private final SwerveDriveSubsystem drivetrain;
+    @Getter
+    private final AprilTagVision aprilTagVision;
+
+    @Getter
+    private final Swerve swerve;
+
+    // @Getter
+    // private final SwerveDriveSubsystem drivetrain;
+
+    @Getter
     private final ElevatorSubsystem elevator;
+
+    @Getter
     private final DislogerSubsystem disloger;
+
+    @Getter
     private final LightsSubsystem lights;
+
+    @Getter
     private final IntakeSubsystem intake;
-    private final VisionSubsystem vision;
+
+    @Getter
     private final ClimbSubsystem climb;
+
+    @Getter
     private boolean aligning = false;
-    private boolean isSlowmode = false;
 
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         lights = new LightsSubsystem();
 
-        elevator = new ElevatorSubsystem(lights);
+        elevator = new ElevatorSubsystem();
         disloger = new DislogerSubsystem();
         intake = new IntakeSubsystem();
         climb = new ClimbSubsystem();
-        vision = new VisionSubsystem();
-        drivetrain = TunerConstants.createDrivetrain(vision);
+        // vision = new VisionSubsystem();
+        // drivetrain = TunerConstants.createDrivetrain(vision);
         aprilTagVision = new AprilTagVision(this, new AprilTagVisionIOPhoton());
-
-        drivetrain.configAutos();
+        swerve = new Swerve(
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(SwerveConstants.TunerConstants.getFrontLeft()),
+                new ModuleIOTalonFX(SwerveConstants.TunerConstants.getFrontRight()),
+                new ModuleIOTalonFX(SwerveConstants.TunerConstants.getBackLeft()),
+                new ModuleIOTalonFX(SwerveConstants.TunerConstants.getBackRight()));
+        // drivetrain.configAutos();
 
         lights.setState(LightsState.DISABLED);
 
@@ -90,24 +113,14 @@ public class RobotContainer {
         configureBindings();
     }
 
-    public SwerveDriveSubsystem getSwerve() {
-        return drivetrain;
-    }
-
-    public boolean isAligning() {
-        return aligning;
-    }
-
     private void configureBindings() {
         // ---------- Driving ----------
-        drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-driver.getLeftY() * MaxSpeed)
-                .withVelocityY(-driver.getLeftX() * MaxSpeed)
-                .withRotationalRate(-driver.getRightX() * MaxAngularRate)));
-
-        driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        swerve.setDefaultCommand(DriveCommands.joystickDrive(
+                swerve,
+                () -> driver.getLeftY(),
+                () -> driver.getLeftX(),
+                () -> -driver.getRightX(),
+                () -> driver.leftBumper().getAsBoolean()));
 
         // driver controls
         // left bumper: slowmode
@@ -119,37 +132,33 @@ public class RobotContainer {
         // a: stow elevator
 
         // slowmode
-        driver.leftBumper().onTrue(drivetrain.runOnce(() -> {
-            isSlowmode = !isSlowmode;
-            if (isSlowmode) {
-                MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 4;
-                MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) / 2;
-            } else {
-                MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-                MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
-            }
-        }));
+        driver.leftBumper();
+
+        // readjust
+        driver.leftTrigger().onTrue(intake.setIntakeCommand(0.5));
+        driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
+
+        // auto align
+        driver.rightBumper().onTrue(new AutoAlignToCoral(this, driver));
 
         // intake/outtake
         driver.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
         driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
 
-        // readjust
-        driver.leftTrigger().onTrue(intake.setIntakeCommand(1.0));
-        driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
-
-        // elevator up
-        driver.x().onTrue(elevator.changeElevateCommand(1));
-
-        // stow elevator
-        driver.a().onTrue(elevator.setElevateCommand(0));
+        operator.povDown().onTrue(elevator.setElevateCommand(0));
+        operator.povLeft().onTrue(elevator.setElevateCommand(1));
+        operator.povUp().onTrue(elevator.setElevateCommand(2));
 
         // climb in
-        driver.b().onTrue(climb.setClimberCommand(-.5));
-        driver.b().onFalse(climb.setClimberCommand(0));
+        driver.povUp().onTrue(climb.setClimberCommand(-.5));
+        driver.povUp().onFalse(climb.setClimberCommand(0));
+
+        // unclimb
+        driver.povDown().onTrue(climb.setClimberCommand(.5));
+        driver.povDown().onFalse(climb.setClimberCommand(0));
 
         // gyro reset
-        driver.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.y().onTrue(Commands.runOnce(() -> swerve.resetGyro()).ignoringDisable(true));
 
         // operator controls
         // pov up: L3
