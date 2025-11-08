@@ -34,7 +34,7 @@ public class AutoAlignToCoral extends Command {
     private static double MAX_SPEED_SCALAR = 0.8;
     private static double LINEAR_MAX_VELOCITY;
 
-    private static final LoggedTunableNumber linearkP = new LoggedTunableNumber("AutoAlign/drivekP", 0.8);
+    private static final LoggedTunableNumber linearkP = new LoggedTunableNumber("AutoAlign/drivekP", 1.3);
     private static final LoggedTunableNumber linearkD = new LoggedTunableNumber("AutoAlign/drivekD", 0.05);
     private static final LoggedTunableNumber thetakP = new LoggedTunableNumber("AutoAlign/thetakP", 0.2);
     private static final LoggedTunableNumber thetakD = new LoggedTunableNumber("AutoAlign/thetakD", 0.0);
@@ -122,8 +122,8 @@ public class AutoAlignToCoral extends Command {
 
         // updateConstraints(); ! ADD THIS BACK
 
-        // LoggedTunableNumber.ifChanged(
-        // hashCode(), pid -> updatePIDS(pid[0], pid[1], pid[2], pid[3]), linearkP, linearkD, thetakP, thetakD);
+        LoggedTunableNumber.ifChanged(
+                hashCode(), pid -> updatePIDS(pid[0], pid[1], pid[2], pid[3]), linearkP, linearkD, thetakP, thetakD);
 
         // LoggedTunableNumber.ifChanged(
         // hashCode(), tolorances -> setTolorances(tolorances[0], tolorances[1]), linearTolorance, thetaTolorance);

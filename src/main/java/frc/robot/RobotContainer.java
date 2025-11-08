@@ -15,9 +15,10 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.AutoScore;
+import frc.robot.commands.AutoAlignToCoral;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
@@ -49,7 +50,7 @@ public class RobotContainer {
     //         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final CommandXboxController driver = new CommandXboxController(0);
-    private final CommandXboxController operator = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(1);
 
     private final AprilTagVision aprilTagVision;
 
@@ -139,28 +140,30 @@ public class RobotContainer {
         driver.leftBumper();
 
         // readjust
-        driver.leftTrigger().onTrue(intake.setIntakeCommand(1.0));
+        driver.leftTrigger().onTrue(intake.setIntakeCommand(0.5));
         driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
         // auto align
-        driver.rightBumper().onTrue(new AutoScore(this));
+        driver.rightBumper().onTrue(new AutoAlignToCoral(this, driver));
 
         // intake/outtake
         driver.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
         driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
 
-        // elevator up
-        driver.x().onTrue(elevator.changeElevateCommand(1));
-
-        // stow elevator
-        driver.a().onTrue(elevator.setElevateCommand(0));
+        operator.povDown().onTrue(elevator.setElevateCommand(0));
+        operator.povLeft().onTrue(elevator.setElevateCommand(1));
+        operator.povUp().onTrue(elevator.setElevateCommand(2));
 
         // climb in
-        driver.b().onTrue(climb.setClimberCommand(-.5));
-        driver.b().onFalse(climb.setClimberCommand(0));
+        driver.povUp().onTrue(climb.setClimberCommand(-.5));
+        driver.povUp().onFalse(climb.setClimberCommand(0));
+
+        // unclimb
+        driver.povDown().onTrue(climb.setClimberCommand(.5));
+        driver.povDown().onFalse(climb.setClimberCommand(0));
 
         // gyro reset
-        // driver.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.y().onTrue(Commands.runOnce(() -> swerve.resetGyro()).ignoringDisable(true));
 
         // operator controls
         // pov up: L3

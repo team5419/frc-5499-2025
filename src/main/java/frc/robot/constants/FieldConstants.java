@@ -36,7 +36,7 @@ public class FieldConstants {
 
         public static final List<Pose3d> kCoralTags = new ArrayList<>(); // list of coral tags on the reef
 
-        public static final Translation2d kReefOffset = new Translation2d(0.456, 0.0); // So we are not in the reef
+        public static final Translation2d kReefOffset = new Translation2d(0.356, 0.0); // So we are not in the reef
 
         // early: x: 0.443, y: 0.166, rotation: 3.136
         // late: x: 0.4357, y: -0.187, rotation: 3.139
