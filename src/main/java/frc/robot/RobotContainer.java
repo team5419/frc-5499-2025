@@ -18,11 +18,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.AutoAlignToCoral;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorGoal;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
@@ -102,9 +102,9 @@ public class RobotContainer {
 
         lights.setState(LightsState.DISABLED);
 
-        NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
-        NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
-        NamedCommands.registerCommand("Elevator L3", elevator.setElevateCommand(2));
+        // NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
+        // NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
+        // NamedCommands.registerCommand("Elevator L3", elevator.setElevateCommand(2));
         NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
         NamedCommands.registerCommand("Disloger Stop", disloger.getDislogeCommand(0));
         NamedCommands.registerCommand("Disloger Reverse", disloger.getDislogeCommand(-1));
@@ -139,20 +139,22 @@ public class RobotContainer {
         // slowmode
         driver.leftBumper();
 
+        driver.a().onTrue(elevator.setElevateCommand(ElevatorGoal.STOW));
+
         // readjust
         driver.leftTrigger().onTrue(intake.setIntakeCommand(0.5));
         driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
         // auto align
-        driver.rightBumper().onTrue(new AutoAlignToCoral(this, driver));
+        // driver.rightBumper()
+        //         .onTrue(new ParallelCommandGroup(
+        //                 new AutoAlignToCoral(this, driver), elevator.setElevateCommand(elevator.getDesiredLevel())));
+
+        driver.rightBumper().onTrue(elevator.setElevateCommand());
 
         // intake/outtake
         driver.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
         driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
-
-        operator.povDown().onTrue(elevator.setElevateCommand(0));
-        operator.povLeft().onTrue(elevator.setElevateCommand(1));
-        operator.povUp().onTrue(elevator.setElevateCommand(2));
 
         // climb in
         driver.povUp().onTrue(climb.setClimberCommand(-.5));
@@ -174,6 +176,10 @@ public class RobotContainer {
         // right bumper: align early
         // right trigger: dislodge
         // unclimb: x?
+
+        operator.povUp().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L3)));
+        operator.povLeft().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L2)));
+        operator.povDown().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L1)));
 
         // unclimb
         operator.x().onTrue(climb.setClimberCommand(.5));
