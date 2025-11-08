@@ -14,11 +14,18 @@ public class IntakeSubsystem extends SubsystemBase {
     DigitalInput input = new DigitalInput(RobotMap.BEAM_BREAK);
 
     public Command setIntakeCommand(double direction) {
+        Logger.recordOutput("Intake Subsystem/Requested Direction", direction);
         return Commands.runOnce(() -> intake.set(direction));
+    }
+
+    public void setIntake(double direction) {
+        Logger.recordOutput("Intake Subsystem/Requested Direction", direction);
+        intake.set(direction);
     }
 
     public Command setIntakeWithSensorCommand(double direction) {
         return Commands.runOnce(() -> {
+            Logger.recordOutput("Intake Subsystem/Requested Direction", direction);
             intake.set(direction);
             // if (input.get()) {
             //   intake.set(0);

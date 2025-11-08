@@ -18,7 +18,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoAlignToCoral;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.Outtake;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -146,15 +148,10 @@ public class RobotContainer {
         driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
         // auto align
-        // driver.rightBumper()
-        //         .onTrue(new ParallelCommandGroup(
-        //                 new AutoAlignToCoral(this, driver), elevator.setElevateCommand(elevator.getDesiredLevel())));
-
-        driver.rightBumper().onTrue(elevator.setElevateCommand());
+        driver.rightBumper().onTrue(new AutoAlignToCoral(this, driver));
 
         // intake/outtake
-        driver.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
-        driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
+        driver.rightTrigger().onTrue(elevator.setElevateCommand()).onFalse(new Outtake(intake));
 
         // climb in
         driver.povUp().onTrue(climb.setClimberCommand(-.5));
@@ -168,37 +165,27 @@ public class RobotContainer {
         driver.y().onTrue(Commands.runOnce(() -> swerve.resetGyro()).ignoringDisable(true));
 
         // operator controls
-        // pov up: L3
-        // pov left: L2
-        // pov down: L1
-        // start: emergency something
-        // left bumper: align late
-        // right bumper: align early
-        // right trigger: dislodge
-        // unclimb: x?
-
-        operator.povUp().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L3)));
+        // L2-L3
+        operator.povRight().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L3)));
         operator.povLeft().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L2)));
         operator.povDown().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L1)));
-
         // unclimb
         operator.x().onTrue(climb.setClimberCommand(.5));
         operator.x().onFalse(climb.setClimberCommand(0));
-        // Triggers - Intake
-        // Bumper, Early Late
-        // D pad, 2-3
-        // dislodge
-        // X,A Climb
-        operator.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
-        operator.rightTrigger().onFalse(intake.setIntakeCommand(0));
-
+        // Trigger - Intake
+        operator.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
+        operator.leftTrigger().onFalse(intake.setIntakeCommand(0));
+        // Dislodge
+        operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
+        operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
+        // Deploy Dislodger
+        operator.y().onTrue(disloger.getDislogeCommand(-1));
+        operator.y().onFalse(disloger.getDislogeCommand(0));
+        // Early - Late
         operator.leftBumper()
                 .onTrue(new InstantCommand(() -> RobotState.getInstance().setEarly(false)));
         operator.rightBumper()
                 .onTrue(new InstantCommand(() -> RobotState.getInstance().setEarly(true)));
-
-        operator.leftTrigger().onTrue(disloger.getDislogeCommand(1));
-        operator.leftTrigger().onFalse(disloger.getDislogeCommand(0));
     }
 
     // simple proportional turning control with Limelight.
