@@ -183,6 +183,12 @@ public class RobotContainer {
         // D pad, 2-3
         // dislodge
         // X,A Climb
+
+        operator.leftBumper()
+                .onTrue(new InstantCommand(() -> RobotState.getInstance().setEarly(false)));
+        operator.rightBumper()
+                .onTrue(new InstantCommand(() -> RobotState.getInstance().setEarly(true)));
+
         operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
         operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
     }

@@ -170,15 +170,17 @@ public class AutoAlignToCoral extends Command {
 
         Logger.recordOutput("AutoAlign/Joystick Went Down", joystickWentDown);
 
-        // Logger.recordOutput("AutoAlign/Auto-Align Active", true);
+        Logger.recordOutput("AutoAlign/Auto-Align Active", true);
         Logger.recordOutput("AutoAlign/LinearX At Goal", linearXController.atGoal());
         Logger.recordOutput("AutoAlign/LinearY At Goal", linearYController.atGoal());
         Logger.recordOutput("AutoAlign/Theta At Goal", thetaController.atGoal());
-        // Logger.recordOutput("AutoAlign/DriveVelocityX", driveVelocityX);
-        // Logger.recordOutput("AutoAlign/DriveVelocityY", driveVelocityY);
-        // Logger.recordOutput("AutoAlign/ThetaVelocity", thetaVelocity);
-        // Logger.recordOutput("AutoAlign/TargetPose", targetPose);
-        // Logger.recordOutput("AutoAlign/Tol Timer", tolTimer.get());
+        Logger.recordOutput("AutoAlign/DriveVelocityX", driveVelocityX);
+        Logger.recordOutput("AutoAlign/DriveVelocityY", driveVelocityY);
+        Logger.recordOutput("AutoAlign/ThetaVelocity", thetaVelocity);
+        Logger.recordOutput("AutoAlign/TargetPose", targetPose);
+        Logger.recordOutput("AutoAlign/Tol Timer", tolTimer.get());
+        Logger.recordOutput("AutoAlign/Driver X", driver.getRightX());
+        Logger.recordOutput("AutoAlign/Driver Y", driver.getLeftY());
     }
 
     @Override
