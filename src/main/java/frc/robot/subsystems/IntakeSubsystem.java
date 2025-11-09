@@ -28,9 +28,9 @@ public class IntakeSubsystem extends SubsystemBase {
             Logger.recordOutput("Intake Subsystem/Requested Direction", direction);
             intake.set(direction);
             // if (input.get()) {
-            //   intake.set(0);
+            //     intake.set(0);
             // } else {
-            //   intake.set(direction);
+            //     intake.set(direction);
             // }
         });
     }

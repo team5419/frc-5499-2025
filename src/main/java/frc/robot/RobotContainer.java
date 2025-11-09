@@ -17,6 +17,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AutoAlignToCoral;
 import frc.robot.commands.DriveCommands;
@@ -104,19 +109,10 @@ public class RobotContainer {
 
         lights.setState(LightsState.DISABLED);
 
-        // NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
-        // NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
-        // NamedCommands.registerCommand("Elevator L3", elevator.setElevateCommand(2));
-        NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
-        NamedCommands.registerCommand("Disloger Stop", disloger.getDislogeCommand(0));
-        NamedCommands.registerCommand("Disloger Reverse", disloger.getDislogeCommand(-1));
-        NamedCommands.registerCommand("Intake", intake.setIntakeCommand(1));
-        NamedCommands.registerCommand("Outtake", intake.setIntakeCommand(-1));
-        NamedCommands.registerCommand("Intake Stop", intake.setIntakeCommand(0));
-
         autoChooser = AutoBuilder.buildAutoChooser("coral");
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
+        configNamedCommands();
         configureBindings();
     }
 
@@ -148,14 +144,15 @@ public class RobotContainer {
         driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
         // auto align
-        driver.rightBumper().onTrue(new AutoAlignToCoral(this, driver));
+        // driver.rightBumper().onTrue(new AutoAlignToCoral(this, driver));
+        // driver.b().onTrue(elevator.setElevateCommand());
+        // driver.b().onFalse(elevator.setElevateCommand())
 
-        // intake/outtake
+        // outtake
         driver.rightTrigger().onTrue(elevator.setElevateCommand()).onFalse(new Outtake(intake));
-
-        // climb in
-        driver.povUp().onTrue(climb.setClimberCommand(-.5));
-        driver.povUp().onFalse(climb.setClimberCommand(0));
+        driver.rightBumper()
+                .onTrue(new ParallelCommandGroup(elevator.setElevateCommand(), new AutoAlignToCoral(this, driver)))
+                .onFalse(new Outtake(intake));
 
         // unclimb
         driver.povDown().onTrue(climb.setClimberCommand(.5));
@@ -169,15 +166,23 @@ public class RobotContainer {
         operator.povRight().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L3)));
         operator.povLeft().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L2)));
         operator.povDown().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L1)));
+
+        // climb in
+        operator.b().onTrue(climb.setClimberCommand(-.5));
+        operator.b().onFalse(climb.setClimberCommand(0));
+
         // unclimb
         operator.x().onTrue(climb.setClimberCommand(.5));
         operator.x().onFalse(climb.setClimberCommand(0));
         // Trigger - Intake
-        operator.leftTrigger().onTrue(intake.setIntakeCommand(-0.5));
-        operator.leftTrigger().onFalse(intake.setIntakeCommand(0));
+        operator.leftTrigger().onTrue(intake.setIntakeWithSensorCommand(-0.5));
+        operator.leftTrigger().onFalse(intake.setIntakeWithSensorCommand(0));
+
+        operator.rightTrigger().onTrue(intake.setIntakeWithSensorCommand(0.5));
+        operator.rightTrigger().onFalse(intake.setIntakeWithSensorCommand(0));
         // Dislodge
-        operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
-        operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
+        operator.a().onTrue(new ParallelCommandGroup(disloger.getDislogeCommand(1), elevator.setElevateCommand()));
+        operator.a().onFalse(new ParallelCommandGroup(disloger.getDislogeCommand(0), elevator.setElevateCommand()));
         // Deploy Dislodger
         operator.y().onTrue(disloger.getDislogeCommand(-1));
         operator.y().onFalse(disloger.getDislogeCommand(0));
@@ -228,15 +233,21 @@ public class RobotContainer {
     private void configNamedCommands() {
         NamedCommands.registerCommand(
                 "Record Time", new InstantCommand(() -> RobotState.getInstance().setAutoFinished(true)));
-        NamedCommands.registerCommand("Intake Coral", new InstantCommand());
-        NamedCommands.registerCommand("Score Coral", new InstantCommand());
-        NamedCommands.registerCommand("Dealgea", new InstantCommand());
-        NamedCommands.registerCommand("Auto Align", new InstantCommand());
-
-        NamedCommands.registerCommand("Intake Coral", new InstantCommand());
-        NamedCommands.registerCommand("Score Coral", new InstantCommand());
-        NamedCommands.registerCommand("Dealgae", new InstantCommand());
-        NamedCommands.registerCommand("Auto Align", new InstantCommand());
+        NamedCommands.registerCommand(
+                "Intake Coral", new ParallelRaceGroup(intake.setIntakeCommand(-0.2), new WaitCommand(0.5)));
+        NamedCommands.registerCommand(
+                "Score Coral",
+                new SequentialCommandGroup(
+                        intake.setIntakeCommand(-0.5),
+                        new WaitCommand(0.3),
+                        new ParallelCommandGroup(
+                                new RunCommand(() -> elevator.updateElevator(ElevatorGoal.STOW)),
+                                intake.setIntakeCommand(0))));
+        NamedCommands.registerCommand(
+                "Dealgea",
+                new ParallelCommandGroup(
+                        disloger.getDislogeCommand(1), new RunCommand(() -> elevator.updateElevator(ElevatorGoal.L2))));
+        NamedCommands.registerCommand("Auto Align", new AutoAlignToCoral(this, driver));
     }
 
     public Command getAutonomousCommand() {

@@ -19,7 +19,7 @@ public class Outtake extends Command {
     @Override
     public void initialize() {
         timer.restart();
-        intake.setIntake(-0.5);
+        intake.setIntake(-1);
     }
 
     @Override

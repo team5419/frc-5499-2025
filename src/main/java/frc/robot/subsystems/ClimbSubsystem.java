@@ -14,6 +14,10 @@ public class ClimbSubsystem extends SubsystemBase {
 
     private final RelativeEncoder climbEncoder = climber.getEncoder();
 
+    // public ClimbSubsystem() {
+    //     climber.setBrakeMode();
+    // }
+
     public Command setClimberCommand(double direction) {
         return Commands.runOnce(() -> climber.set(direction));
     }
