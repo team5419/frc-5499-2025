@@ -8,106 +8,122 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.generated.TunerConstants;
+import frc.robot.commands.AutoAlignToCoral;
+import frc.robot.commands.DriveCommands;
+import frc.robot.commands.Outtake;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DislogerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorGoal;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.LightsSubsystem.LightsState;
-import frc.robot.subsystems.SwerveDriveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIOPhoton;
+import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.SwerveConstants;
+import frc.robot.subsystems.swerve.generated.TunerConstantsBearium;
+import frc.robot.subsystems.swerve.gyro.GyroIOPigeon2;
+import frc.robot.subsystems.swerve.module.ModuleIOTalonFX;
+import java.io.File;
+import lombok.Getter;
 
 public class RobotContainer {
 
-    AprilTagVision aprilTagVision;
-
     // kSpeedAt12Volts desired top speed
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    private double MaxSpeed = TunerConstantsBearium.kSpeedAt12Volts.in(MetersPerSecond);
     // 3/4 of a rotation per second max angular velocity
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     // Setting up bindings for necessary control of the swerve drive platform
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1)
-            .withRotationalDeadband(MaxAngularRate * 0.1)
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    // private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    //         .withDeadband(MaxSpeed * 0.1)
+    //         .withRotationalDeadband(MaxAngularRate * 0.1)
+    //         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final CommandXboxController driver = new CommandXboxController(0);
-    private final CommandXboxController operator = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(1);
 
-    private final SwerveDriveSubsystem drivetrain;
+    private final AprilTagVision aprilTagVision;
+
+    @Getter
+    private final Swerve swerve;
+
+    // private final SwerveDriveSubsystem drivetrain;
+
+    @Getter
     private final ElevatorSubsystem elevator;
+
+    @Getter
     private final DislogerSubsystem disloger;
+
+    @Getter
     private final LightsSubsystem lights;
+
+    @Getter
     private final IntakeSubsystem intake;
-    private final VisionSubsystem vision;
+
+    @Getter
     private final ClimbSubsystem climb;
+
     private boolean aligning = false;
-    private boolean isSlowmode = false;
+
+    public boolean isAligning() {
+        return aligning;
+    }
 
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         lights = new LightsSubsystem();
 
-        elevator = new ElevatorSubsystem(lights);
+        elevator = new ElevatorSubsystem();
         disloger = new DislogerSubsystem();
         intake = new IntakeSubsystem();
         climb = new ClimbSubsystem();
-        vision = new VisionSubsystem();
-        drivetrain = TunerConstants.createDrivetrain(vision);
+        // vision = new VisionSubsystem();
+        // drivetrain = TunerConstants.createDrivetrain(vision);
         aprilTagVision = new AprilTagVision(this, new AprilTagVisionIOPhoton());
-
-        drivetrain.configAutos();
+        swerve = new Swerve(
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(SwerveConstants.TunerConstants.getFrontLeft()),
+                new ModuleIOTalonFX(SwerveConstants.TunerConstants.getFrontRight()),
+                new ModuleIOTalonFX(SwerveConstants.TunerConstants.getBackLeft()),
+                new ModuleIOTalonFX(SwerveConstants.TunerConstants.getBackRight()));
+        // drivetrain.configAutos();
 
         lights.setState(LightsState.DISABLED);
-
-        NamedCommands.registerCommand("Elevator L1", elevator.setElevateCommand(0));
-        NamedCommands.registerCommand("Elevator L2", elevator.setElevateCommand(1));
-        NamedCommands.registerCommand("Elevator L3", elevator.setElevateCommand(2));
-        NamedCommands.registerCommand("Disloger", disloger.getDislogeCommand(1));
-        NamedCommands.registerCommand("Disloger Stop", disloger.getDislogeCommand(0));
-        NamedCommands.registerCommand("Disloger Reverse", disloger.getDislogeCommand(-1));
-        NamedCommands.registerCommand("Intake", intake.setIntakeCommand(1));
-        NamedCommands.registerCommand("Outtake", intake.setIntakeCommand(-1));
-        NamedCommands.registerCommand("Intake Stop", intake.setIntakeCommand(0));
 
         autoChooser = AutoBuilder.buildAutoChooser("coral");
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
+        configNamedCommands();
         configureBindings();
-    }
-
-    public SwerveDriveSubsystem getSwerve() {
-        return drivetrain;
-    }
-
-    public boolean isAligning() {
-        return aligning;
     }
 
     private void configureBindings() {
         // ---------- Driving ----------
-        drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-driver.getLeftY() * MaxSpeed)
-                .withVelocityY(-driver.getLeftX() * MaxSpeed)
-                .withRotationalRate(-driver.getRightX() * MaxAngularRate)));
-
-        driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        swerve.setDefaultCommand(DriveCommands.joystickDrive(
+                swerve,
+                () -> driver.getLeftY(),
+                () -> driver.getLeftX(),
+                () -> -driver.getRightX(),
+                () -> driver.leftBumper().getAsBoolean()));
 
         // driver controls
         // left bumper: slowmode
@@ -119,55 +135,63 @@ public class RobotContainer {
         // a: stow elevator
 
         // slowmode
-        driver.leftBumper().onTrue(drivetrain.runOnce(() -> {
-            isSlowmode = !isSlowmode;
-            if (isSlowmode) {
-                MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 4;
-                MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) / 2;
-            } else {
-                MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-                MaxAngularRate = RotationsPerSecond.of(0.9).in(RadiansPerSecond);
-            }
-        }));
+        driver.leftBumper();
 
-        // intake/outtake
-        driver.rightTrigger().onTrue(intake.setIntakeCommand(-0.5));
-        driver.rightTrigger().onFalse(intake.setIntakeCommand(0));
+        // stow
+        driver.a().onTrue(elevator.setElevateCommand(ElevatorGoal.STOW));
 
         // readjust
-        driver.leftTrigger().onTrue(intake.setIntakeCommand(1.0));
+        driver.leftTrigger().onTrue(intake.setIntakeCommand(0.5));
         driver.leftTrigger().onFalse(intake.setIntakeCommand(0));
 
-        // elevator up
-        driver.x().onTrue(elevator.changeElevateCommand(1));
+        // auto align
+        // driver.rightBumper().onTrue(new AutoAlignToCoral(this, driver));
+        // driver.b().onTrue(elevator.setElevateCommand());
+        // driver.b().onFalse(elevator.setElevateCommand())
 
-        // stow elevator
-        driver.a().onTrue(elevator.setElevateCommand(0));
+        // outtake
+        driver.rightTrigger().onTrue(elevator.setElevateCommand()).onFalse(new Outtake(intake));
+        driver.rightBumper()
+                .onTrue(new ParallelCommandGroup(elevator.setElevateCommand(), new AutoAlignToCoral(this, driver)))
+                .onFalse(new Outtake(intake));
 
-        // climb in
-        driver.b().onTrue(climb.setClimberCommand(-.5));
-        driver.b().onFalse(climb.setClimberCommand(0));
+        // unclimb
+        driver.povDown().onTrue(climb.setClimberCommand(.5));
+        driver.povDown().onFalse(climb.setClimberCommand(0));
 
         // gyro reset
-        driver.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.y().onTrue(Commands.runOnce(() -> swerve.resetGyro()).ignoringDisable(true));
 
         // operator controls
-        // pov up: L3
-        // pov left: L2
-        // pov down: L1
-        // start: emergency something
-        // left bumper: align late
-        // right bumper: align early
-        // right trigger: dislodge
-        // unclimb: x?
+        // L2-L3
+        operator.povRight().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L3)));
+        operator.povLeft().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L2)));
+        operator.povDown().onTrue(new InstantCommand(() -> elevator.setCurrentGoal(ElevatorGoal.L1)));
+
+        // climb in
+        operator.b().onTrue(climb.setClimberCommand(-.5));
+        operator.b().onFalse(climb.setClimberCommand(0));
 
         // unclimb
         operator.x().onTrue(climb.setClimberCommand(.5));
         operator.x().onFalse(climb.setClimberCommand(0));
+        // Trigger - Intake
+        operator.leftTrigger().onTrue(intake.setIntakeWithSensorCommand(-0.5));
+        operator.leftTrigger().onFalse(intake.setIntakeWithSensorCommand(0));
 
-        // dislodge
-        operator.rightTrigger().onTrue(disloger.getDislogeCommand(1));
-        operator.rightTrigger().onFalse(disloger.getDislogeCommand(0));
+        operator.rightTrigger().onTrue(intake.setIntakeWithSensorCommand(0.5));
+        operator.rightTrigger().onFalse(intake.setIntakeWithSensorCommand(0));
+        // Dislodge
+        operator.a().onTrue(new ParallelCommandGroup(disloger.getDislogeCommand(1), elevator.setElevateCommand()));
+        operator.a().onFalse(new ParallelCommandGroup(disloger.getDislogeCommand(0), elevator.setElevateCommand()));
+        // Deploy Dislodger
+        operator.y().onTrue(disloger.getDislogeCommand(-1));
+        operator.y().onFalse(disloger.getDislogeCommand(0));
+        // Early - Late
+        operator.leftBumper()
+                .onTrue(new InstantCommand(() -> RobotState.getInstance().setEarly(false)));
+        operator.rightBumper()
+                .onTrue(new InstantCommand(() -> RobotState.getInstance().setEarly(true)));
     }
 
     // simple proportional turning control with Limelight.
@@ -207,8 +231,50 @@ public class RobotContainer {
         return targetingForwardSpeed;
     }
 
+    private void configNamedCommands() {
+        NamedCommands.registerCommand(
+                "Record Time", new InstantCommand(() -> RobotState.getInstance().setAutoFinished(true)));
+        NamedCommands.registerCommand(
+                "Intake Coral", new ParallelRaceGroup(intake.setIntakeCommand(-0.2), new WaitCommand(0.5)));
+        NamedCommands.registerCommand(
+                "Score Coral",
+                new SequentialCommandGroup(
+                        intake.setIntakeCommand(-0.5),
+                        new WaitCommand(0.3),
+                        new ParallelCommandGroup(
+                                new RunCommand(() -> elevator.updateElevator(ElevatorGoal.STOW)),
+                                intake.setIntakeCommand(0))));
+        NamedCommands.registerCommand(
+                "Dealgea",
+                new ParallelCommandGroup(
+                        disloger.getDislogeCommand(1), new RunCommand(() -> elevator.updateElevator(ElevatorGoal.L2))));
+        NamedCommands.registerCommand("Auto Align", new AutoAlignToCoral(this, driver));
+    }
+
     public Command getAutonomousCommand() {
         System.out.println(autoChooser.getSelected().getName());
         return autoChooser.getSelected();
+    }
+    ;
+
+    public SendableChooser<Command> buildAutoChooser() {
+        SendableChooser<Command> chooser = new SendableChooser<>();
+        chooser.setDefaultOption("Do nothing", new InstantCommand());
+        File autosDir = new File(Filesystem.getDeployDirectory(), "pathplanner/autos");
+        for (File f : autosDir.listFiles()) {
+            if (!f.isDirectory()) {
+                String fileName[] = f.getName().split("\\.");
+                String autoName = fileName[0];
+                chooser.addOption(
+                        autoName, AutoBuilder.buildAuto(autoName).beforeStarting(() -> System.out.println(autoName)));
+            }
+        }
+        chooser.addOption("3-Coral-Right", new PathPlannerAuto("3-Coral-Left", true));
+        return chooser;
+    }
+
+    public AprilTagVision getAprilTagVision() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAprilTagVision'");
     }
 }

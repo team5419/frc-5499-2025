@@ -15,6 +15,14 @@ import frc.robot.RobotMap;
 import java.util.Map;
 
 public class LightsSubsystem extends SubsystemBase {
+
+    private static LightsSubsystem instance;
+
+    public static LightsSubsystem getInstance() {
+        if (instance == null) instance = new LightsSubsystem();
+        return instance;
+    }
+
     private final AddressableLED leds;
     private AddressableLEDBuffer buffer;
 

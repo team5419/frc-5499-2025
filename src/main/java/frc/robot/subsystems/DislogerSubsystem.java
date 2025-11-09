@@ -11,11 +11,12 @@ public class DislogerSubsystem extends SubsystemBase {
     private final SparkMax motor = new SparkMax(RobotMap.DISLOGER, MotorType.kBrushless);
 
     public Command getDislogeCommand(int direction) {
+        Logger.recordOutput("Dislodger Subsystem/Dislodger Requested Direction", direction);
         return this.runOnce(() -> motor.set(direction));
     }
 
     @Override
     public void periodic() {
-        Logger.recordOutput("Disloger Subsystem/Disloger Motor Output", motor.get());
+        Logger.recordOutput("Dislodger Subsystem/Dislodger Motor Output", motor.get());
     }
 }

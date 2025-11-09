@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.54775,
+        "y": 5.448499999999999
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.220758849557523,
+        "y": 6.242305309734514
+      },
+      "isLocked": false,
+      "linkedName": "3L"
+    },
+    {
+      "anchor": {
+        "x": 1.2285000000000001,
+        "y": 7.2035
+      },
+      "prevControl": {
+        "x": 2.263898230088496,
+        "y": 6.754827433628318
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CS"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 133.6028189727037
+  },
+  "reversed": false,
+  "folder": "Left 3 Coral Auto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -126.09828396710803
+  },
+  "useDefaultConstraints": true
+}

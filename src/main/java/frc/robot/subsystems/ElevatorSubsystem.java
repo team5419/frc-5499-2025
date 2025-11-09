@@ -10,12 +10,18 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.RobotMap;
-import frc.robot.subsystems.LightsSubsystem.LightsState;
+import frc.robot.lib.LoggedTunableNumber;
+import java.util.function.DoubleSupplier;
+import lombok.Getter;
+import lombok.Setter;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
+    public static final double[] elevatorPositions = /*{0, 95, 134}*/ {0, 3.5, 14.6};
+    public static final double elevatorConversion = /*0.0368421053*/ 1;
+
     private final SparkMax leftElevator = new SparkMax(RobotMap.LEFT_ELEVATOR, MotorType.kBrushless);
     private final SparkMax rightElevator = new SparkMax(RobotMap.RIGHT_ELEVATOR, MotorType.kBrushless);
 
@@ -27,12 +33,39 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final RelativeEncoder leftEncoder = leftElevator.getEncoder();
     private final RelativeEncoder rightEncoder = rightElevator.getEncoder();
 
-    private int currentPosition = 0;
+    private static final LoggedTunableNumber stow = new LoggedTunableNumber("Elevator/Stow Height", 0);
+    private static final LoggedTunableNumber l2 = new LoggedTunableNumber("Elevator/L2", 4.57);
+    private static final LoggedTunableNumber l3 = new LoggedTunableNumber("Elevator/L3", 14.76);
 
-    private final LightsSubsystem lights;
+    public enum ElevatorGoal {
+        IDLE(() -> 0), // Should be the current height
+        STOW(stow),
+        INTAKE_FAR(stow),
+        L1(stow),
+        L2(l2),
+        L3(l3);
 
-    public ElevatorSubsystem(LightsSubsystem lights) {
-        this.lights = lights;
+        @Getter
+        private DoubleSupplier eleHeight;
+
+        private ElevatorGoal(DoubleSupplier eleHeight) {
+            this.eleHeight = eleHeight;
+        }
+    }
+
+    @Getter
+    @Setter
+    @AutoLogOutput(key = "Elevator Subsystem/Current Goal")
+    private ElevatorGoal currentGoal = ElevatorGoal.IDLE;
+
+    @Getter
+    @Setter
+    @AutoLogOutput(key = "Elevator Subsystem/Desired Level")
+    private ElevatorGoal desiredLevel = ElevatorGoal.IDLE;
+
+    // private double currentPosition = 0;
+
+    public ElevatorSubsystem() {
 
         elevatorConfig.closedLoop.p(0.15).outputRange(-1, 1);
 
@@ -50,42 +83,44 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.recordOutput("Elevator Subsystem/Right Encoder Velocity", rightEncoder.getVelocity());
     }
 
-    public Command setElevateCommand(int newPosition) {
+    // public Command setElevateCommand(int newPosition) {
+    //     return this.runOnce(() -> {
+    //         this.currentPosition = newPosition;
+    //         updateElevator();
+    //     });
+    // }
+
+    public Command setElevateCommand(ElevatorGoal goal) {
         return this.runOnce(() -> {
-            this.currentPosition = newPosition;
+            updateElevator(goal);
+        });
+    }
+
+    public Command setElevateCommand() {
+        return this.runOnce(() -> {
+            // setCurrentGoal(goal);
             updateElevator();
         });
     }
 
-    public Command changeElevateCommand(int positionChange) {
-        return this.runOnce(() -> {
-            this.currentPosition = Math.min(this.currentPosition + positionChange, 2);
-            updateElevator();
-        });
-    }
+    // public Command changeElevateCommand(int positionChange) {
+    //     return this.runOnce(() -> {
+    //         this.currentPosition = Math.min(this.currentPosition + positionChange, 2);
+    //         updateElevator();
+    //     });
+    // }
 
-    public void updateElevator() {
-        double position = Constants.elevatorPositions[this.currentPosition] * Constants.elevatorConversion;
+    public void updateElevator(ElevatorGoal goal) {
+        double position = goal.getEleHeight().getAsDouble();
 
         leftController.setReference(position, ControlType.kPosition);
         rightController.setReference(position, ControlType.kPosition);
+    }
 
-        LightsState state;
-        switch (this.currentPosition) {
-            case 0:
-                state = LightsState.L1;
-                break;
-            case 1:
-                state = LightsState.L2;
-                break;
-            case 2:
-                state = LightsState.L3;
-                break;
-            default:
-                state = LightsState.IDLE;
-                break;
-        }
+    public void updateElevator() {
+        double position = currentGoal.getEleHeight().getAsDouble();
 
-        lights.setState(state);
+        leftController.setReference(position, ControlType.kPosition);
+        rightController.setReference(position, ControlType.kPosition);
     }
 }
