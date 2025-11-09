@@ -137,6 +137,7 @@ public class RobotContainer {
         // slowmode
         driver.leftBumper();
 
+        // stow
         driver.a().onTrue(elevator.setElevateCommand(ElevatorGoal.STOW));
 
         // readjust
